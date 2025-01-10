@@ -63,13 +63,22 @@ if (WiFi.status() == WL_CONNECTED) {
     doc["battery"] = voltageDividerReading;
 
     String jsonData;
-    serializeJson(doc, jsonData);
-    //mqttClient.publish("beehive/data", jsonData.c_str());
+    unsigned long lastPublishTime = 0;
+    const unsigned long publishInterval = 15 * 60 * 1000; // 15 minutes in milliseconds
 
-    if(debug) {
+    if (millis() - lastPublishTime >= publishInterval) {
+      serializeJson(doc, jsonData);
+      mqttClient.publish("beehive/data", jsonData.c_str());
+      lastPublishTime = millis(); // Update the last publish time
+      if(debug) {
       Serial.println("Published data to AWS IoT: ");
       Serial.println(jsonData);
     }
+    }
+    serializeJson(doc, jsonData);
+    //mqttClient.publish("beehive/data", jsonData.c_str());
+
+    
   }
 
 
