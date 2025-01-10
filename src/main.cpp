@@ -21,10 +21,12 @@ void setup() {
   Serial.println("Setup Complete");
 }
 
+unsigned long lastPublishTime = 0; // Initialize outside the loop
+const unsigned long publishInterval = 15 * 60 * 1000; // 15 minutes in milliseconds
 
 void loop() {
   checkForUpdates();
-if (!mqttClient.connected()) {
+  if (!mqttClient.connected()) {
     connectToAWS();
   }
   mqttClient.loop();
@@ -33,21 +35,19 @@ if (!mqttClient.connected()) {
     Serial.println("##################################");
   }
 
+  handleSerialCommands();
+  measureBattery();
+  readDHTSensors();
 
-handleSerialCommands();
-measureBattery();
-readDHTSensors();
-
-// Check if tare is requested via IoT or locally
+  // Check if tare is requested via IoT or locally
   if (tareRequested) {
     tareScale();
     // Clear the IoT Cloud variable after taring
     tareRequested = false;
   }
 
-
-    // If WiFi is connected, publish data to AWS IoT
-if (WiFi.status() == WL_CONNECTED) {
+  // If WiFi is connected, publish data to AWS IoT
+  if (WiFi.status() == WL_CONNECTED) {
     if (!mqttClient.connected()) {
       initAWS();
     }
@@ -63,30 +63,18 @@ if (WiFi.status() == WL_CONNECTED) {
     doc["battery"] = voltageDividerReading;
 
     String jsonData;
-    unsigned long lastPublishTime = 0;
-    const unsigned long publishInterval = 15 * 60 * 1000; // 15 minutes in milliseconds
 
     if (millis() - lastPublishTime >= publishInterval) {
       serializeJson(doc, jsonData);
       mqttClient.publish("beehive/data", jsonData.c_str());
       lastPublishTime = millis(); // Update the last publish time
       if(debug) {
-      Serial.println("Published data to AWS IoT: ");
-      Serial.println(jsonData);
+        Serial.println("Published data to AWS IoT: ");
+        Serial.println(jsonData);
+      }
     }
-    }
-    serializeJson(doc, jsonData);
-    //mqttClient.publish("beehive/data", jsonData.c_str());
-
-    
   }
 
-
-
-
- 
   delay(1000); // Add a delay to prevent the loop from running too fast
   // Add functionality here if needed
 }
-
-
