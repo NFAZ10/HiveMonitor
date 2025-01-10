@@ -23,7 +23,7 @@ void setup() {
 
 unsigned long lastPublishTime = 0; // Initialize outside the loop
 const unsigned long publishInterval = 15 * 60 * 1000; // 15 minutes in milliseconds
-
+int awsConnectAttempts;
 void loop() {
   checkForUpdates();
   if (!mqttClient.connected()) {
@@ -68,12 +68,29 @@ void loop() {
 
     if (millis() - lastPublishTime >= publishInterval) {
       serializeJson(doc, jsonData);
-      mqttClient.publish("beehive/data", jsonData.c_str());
+      uint8_t mac[6];
+      WiFi.macAddress(mac);
+      char macStr[13];
+      static int awsConnectAttempts = 0;
+      snprintf(macStr, sizeof(macStr), "%02X%02X%02X%02X", mac[2], mac[3], mac[4], mac[5]);
+      String topic = "beehive/data/";
+      topic += String(macStr).substring(8); // Get the last 4 digits of the MAC address
+      mqttClient.publish(topic.c_str(), jsonData.c_str());
       lastPublishTime = millis(); // Update the last publish time
       if(debug) {
         Serial.println("Published data to AWS IoT: ");
         Serial.println(jsonData);
       }
+    }
+
+    if (!mqttClient.connected()) {
+      awsConnectAttempts++;
+      if (awsConnectAttempts >= 5) {
+        Serial.println("Failed to connect to AWS IoT after 5 attempts. Rebooting...");
+        ESP.restart();
+      }
+    } else {
+      awsConnectAttempts = 0; // Reset the counter if connected
     }
   }
 

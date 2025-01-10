@@ -1,0 +1,1 @@
+1.0.34 - Adding Last 4 of Mac address to publish topic
