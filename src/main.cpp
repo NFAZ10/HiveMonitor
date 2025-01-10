@@ -61,6 +61,8 @@ void loop() {
     doc["humidity2"] = h2;
     doc["weight"] = grams;
     doc["battery"] = voltageDividerReading;
+    doc["version"] = currentVersion;
+   
 
     String jsonData;
 
