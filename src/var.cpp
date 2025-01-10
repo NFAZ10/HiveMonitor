@@ -38,6 +38,6 @@ float vin = 0.0;
 int value = 0;
 unsigned long t = 0;
 
-const char* versionURL = "https://raw.githubusercontent.com/username/repo/main/version.txt";
-const char* firmwareURL = "https://raw.githubusercontent.com/username/repo/main/firmware.bin";
-const String currentVersion = "1.0.0";
+const char* versionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/main/src/version.txt";
+const char* firmwareURL = "https://github.com/NFAZ10/HiveMonitor/raw/refs/heads/main/.pio/build/esp32dev/firmware.bin";
+const String currentVersion = "1.0.1";
