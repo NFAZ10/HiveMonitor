@@ -15,6 +15,7 @@ float movingAverage();
 void tareScale();
 void recalibrateScale();
 void handleSerialCommands();
+void WifiManagerinit();
 
 
 

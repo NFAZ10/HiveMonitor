@@ -17,6 +17,7 @@
 #include "DHT.h"
 #include "ArduinoJson.h"
 
+
 // External declarations for global variables
 extern WiFiClientSecure secureClient;
 extern PubSubClient mqttClient;

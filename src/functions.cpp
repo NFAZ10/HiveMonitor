@@ -71,6 +71,7 @@ void initScale() {
 
 void connectToWiFi() {
   // Decide which SSID/PASS to use
+  
   if (wifiSSID != "" && wifiPassword != "") {
     if(debug) {
       Serial.println("Using Stored Credentials...");
@@ -85,6 +86,10 @@ void connectToWiFi() {
     WiFi.mode(WIFI_STA);
     WiFi.begin(SSID, PASS);
     delay(100);
+    if (WiFi.status() == WL_CONNECTED) {
+      Serial.print("Connected IP Address: ");
+      Serial.println(WiFi.localIP());
+    }
   }
 
   // Attempt to connect for up to 10 seconds
@@ -337,9 +342,6 @@ void handleSerialCommands() {
     }
   }
 }
-
-
-
 
 
 

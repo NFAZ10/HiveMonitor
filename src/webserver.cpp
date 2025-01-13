@@ -8,6 +8,7 @@ AsyncWebServer server(80);
 //            WEB SERVER SETUP
 ///////////////////////////////////////////////
 void setupWebServer() {
+  Serial.println("Setting up Web Server...");
   // Root URL
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     String html = "<html><head><style>";
@@ -26,6 +27,7 @@ void setupWebServer() {
     html += "<p>Calibration Status: " + calibrationStatus + "</p>";
     html += "<button onclick=\"fetch('/tare', {method: 'POST'}).then(() => alert('Tared!'))\">Tare Scale</button>";
     html += "<button onclick=\"fetch('/lowpower', {method: 'POST'}).then(() => alert('Low Power Mode Toggled'))\">Toggle Low Power Mode</button>";
+    html += "<button onclick=\"fetch('/reboot', {method: 'POST'}).then(() => alert('Rebooting...'))\">Restart Device</button>";
     html += "<a href='/data'>View Historical Data</a>";
     html += "<h3>Change Wi-Fi Settings</h3>";
     html += "<form onsubmit=\"submitWifiForm(event)\">";
@@ -91,10 +93,12 @@ void setupWebServer() {
     if (request->hasParam("body", true)) {
       String body = request->getParam("body", true)->value();
       StaticJsonDocument<256> doc;
-      deserializeJson(doc, body);
+      DeserializationError error = deserializeJson(doc, body);
       wifiSSID     = doc["ssid"].as<String>();
       wifiPassword = doc["password"].as<String>();
-
+      Serial.println("Wi-Fi SSID: " + wifiSSID);
+      Serial.println("Wi-Fi Password: " + wifiPassword);
+      Serial.println("Updating Wi-Fi settings...");
       prefs.begin("beehive-data", false);
       prefs.putString("wifiSSID", wifiSSID);
       prefs.putString("wifiPassword", wifiPassword);
@@ -105,5 +109,15 @@ void setupWebServer() {
       request->send(400, "text/plain", "Invalid request");
     }
   });
+
+  // Endpoint to reboot the device
+server.on("/reboot", HTTP_POST, [](AsyncWebServerRequest *request) {
+  request->send(200, "text/plain", "Rebooting...");
+  delay(1000);
+  ESP.restart();
+});
+  server.begin();
+  Serial.println("Web Server Ready.");
+
 }
 

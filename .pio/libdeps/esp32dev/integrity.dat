@@ -1,7 +1,7 @@
-adafruit/DHT sensor library@1.4.6
+olkal/HX711_ADC@1.2.12
 bblanchon/ArduinoJson@7.3.0
+knolleary/PubSubClient@2.8
+esphome/ESPAsyncWebServer-esphome@3.3.0
 adafruit/Adafruit Unified Sensor@1.1.15
 upload_port = COM3
-esphome/ESPAsyncWebServer-esphome@3.3.0
-knolleary/PubSubClient@2.8
-olkal/HX711_ADC@1.2.12
+adafruit/DHT sensor library@1.4.6

@@ -15,6 +15,7 @@ void initAWS() {
 }
 
 void connectToAWS() {
+  if (WiFi.status() == WL_CONNECTED) {
   Preferences prefs;
   prefs.begin("device-data", false);
 
@@ -39,11 +40,14 @@ void connectToAWS() {
       Serial.println(mqttClient.state());
       delay(2000);
     }
-  }
+   }
+  
 
-  // Subscribe to AWS IoT topic
+WiFi.setHostname(thingName.c_str());
+  // Subscribe to AWS IoT topiczzx
   mqttClient.subscribe(AWS_IOT_SUBSCRIBE_TOPIC);
   Serial.println("Subscribed to topic: " + String(AWS_IOT_SUBSCRIBE_TOPIC));
+}
 }
 
 void messageHandler(char* topic, byte* payload, unsigned int length) {
