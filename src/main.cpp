@@ -54,69 +54,59 @@ void loop() {
     tareRequested = false;
   }
 
-  // If WiFi is connected and AWS is connected, publish data to AWS IoT
-  if (WiFi.status() == WL_CONNECTED && mqttClient.connected()) {
-    awsConnectAttempts = 0; // Reset the counter if connected
+   if (WiFi.status() == WL_CONNECTED) {
     mqttClient.loop();
 
-    // Publish data to AWS IoT
-    DynamicJsonDocument doc(256);
-    doc["temperature1"] = t1;
-    doc["humidity1"] = h1;
-    doc["temperature2"] = t2;
-    doc["humidity2"] = h2;
-    doc["weight"] = grams;
-    doc["battery"] = voltageDividerReading;
-    doc["version"] = currentVersion;
+    if (millis() - lastPublishTime > 10000) {
+      uint8_t mac[6];
+      WiFi.macAddress(mac);
+      char macStr[13];
+      snprintf(macStr, sizeof(macStr), "%02X%02X%02X%02X", mac[2], mac[3], mac[4], mac[5]);
+      String topicBase = "beehive/data/";
+      topicBase += macStr; // Get the last 4 digits of the MAC address
+      Serial.println("Sending data to topic: " + topicBase + "/temperature1");
+      mqttClient.publish((topicBase + "/temperature1").c_str(), String(t1).c_str());
+      delay(1000);
+      Serial.println("Sending data to topic: " + topicBase + "/humidity1");
+      mqttClient.publish((topicBase + "/humidity1").c_str(), String(h1).c_str());
+      delay(1000);
+      Serial.println("Sending data to topic: " + topicBase + "/temperature2");
+      mqttClient.publish((topicBase + "/temperature2").c_str(), String(t2).c_str());
+      delay(1000);
+      Serial.println("Sending data to topic: " + topicBase + "/humidity2");
+      mqttClient.publish((topicBase + "/humidity2").c_str(), String(h2).c_str());
+      delay(1000);
+      Serial.println("Sending data to topic: " + topicBase + "/weight");
+      mqttClient.publish((topicBase + "/weight").c_str(), String(grams).c_str());
+      delay(1000);
+      Serial.println("Sending data to topic: " + topicBase + "/battery");
+      mqttClient.publish((topicBase + "/battery").c_str(), String(voltageDividerReading).c_str());
+      delay(1000);
+      Serial.println("Sending data to topic: " + topicBase + "/version");
+      mqttClient.publish((topicBase + "/version").c_str(), String(currentVersion).c_str());
+      delay(1000);
 
-    String jsonData;
-    serializeJson(doc, jsonData);
-    uint8_t mac[6];
-    WiFi.macAddress(mac);
-    char macStr[13];
-    snprintf(macStr, sizeof(macStr), "%02X%02X%02X%02X", mac[2], mac[3], mac[4], mac[5]);
-    String topic = "beehive/data/";
-    Serial.println(macStr);
-    topic = String(topic+macStr); // Get the last 4 digits of the MAC address
-    mqttClient.publish(topic.c_str(), jsonData.c_str());
-    lastPublishTime = millis(); // Update the last publish time
 
-
-     if (millis() - lastPublishTime >= 10000) {
-      DynamicJsonDocument doc(256);
-         doc["temperature1"] = t1;
-        doc["humidity1"] = h1;
-     doc["temperature2"] = t2;
-     doc["humidity2"] = h2;
-     doc["weight"] = grams;
-     doc["battery"] = voltageDividerReading;
-      doc["version"] = currentVersion;
-
-    String jsonData;
-    serializeJson(doc, jsonData);
-    uint8_t mac[6];
-    WiFi.macAddress(mac);
-    char macStr[13];
-    snprintf(macStr, sizeof(macStr), "%02X%02X%02X%02X", mac[2], mac[3], mac[4], mac[5]);
-    String topic = "beehive/data/";
-    Serial.println(macStr);
-    topic = String(topic+macStr); // Get the last 4 digits of the MAC address
-    mqttClient.publish((topic + "/temperature1").c_str(), String(t1).c_str());
-    mqttClient.publish((topic + "/humidity1").c_str(), String(h1).c_str());
-    mqttClient.publish((topic + "/temperature2").c_str(), String(t2).c_str());
-    mqttClient.publish((topic + "/humidity2").c_str(), String(h2).c_str());
-    mqttClient.publish((topic + "/weight").c_str(), String(grams).c_str());
-    mqttClient.publish((topic + "/battery").c_str(), String(voltageDividerReading).c_str());
-    mqttClient.publish((topic + "/version").c_str(), String(currentVersion).c_str());
-    lastPublishTime = millis(); // Update the last publish time
-    Serial.println(topic);
-    if(debug) {
-      Serial.println("Published data to AWS IoT: ");
-      Serial.println(jsonData);
+      lastPublishTime = 0; // Update the last publish time
+      Serial.println(topicBase);
+      if (debug) {
+        Serial.println("Published data to MQTT:");
+        Serial.println("temperature1: " + String(t1));
+        Serial.println("humidity1: " + String(h1));
+        Serial.println("temperature2: " + String(t2));
+        Serial.println("humidity2: " + String(h2));
+        Serial.println("weight: " + String(grams));
+        Serial.println("battery: " + String(voltageDividerReading));
+        Serial.println("version: " + String(currentVersion));
+      }
     }
   }
-}
+
+Serial.println(String("Last publish: ") + lastPublishTime);
+  delay(1000);
+
 checkforWifi();
 
   delay(1000);
 }
+
