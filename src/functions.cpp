@@ -11,8 +11,6 @@
 
 float movingAverage(int newValue);
 
-
-
 void initSerial() {
   if(debug) {
     Serial.begin(9600);
@@ -23,7 +21,6 @@ void initSerial() {
 void initPreferences() {
   prefs.begin("beehive-data", false);
 }
-
 
 void loadPreferences() {
   last_weightstore = prefs.getInt("lastWeight", 0);
@@ -41,13 +38,13 @@ void loadPreferences() {
   }
 }
 
-
 void initDHTSensors() {
   dht1.begin();
   dht2.begin();
 }
 
 void initScale() {
+
   if(debug) Serial.println("Initializing HX711...");
 
   LoadCell.begin();
@@ -67,7 +64,6 @@ void initScale() {
     }
   }
 }
-
 
 void connectToWiFi() {
   // Decide which SSID/PASS to use
@@ -114,8 +110,6 @@ void connectToWiFi() {
   }
 }
 
-
-
 void createAccessPointIfNeeded() {
   // If unable to connect, create access point
   if (WiFi.status() != WL_CONNECTED) {
@@ -155,8 +149,6 @@ void readDHTSensors() {
     }
   }
 }
-
-
 
 void measureBattery() {
   // Monitor the voltage divider on GPIO 32
@@ -211,12 +203,9 @@ void updateScale() {
   }
 }
 
-
-
 ///////////////////////////////////////////////
 //           TARE & CALIBRATION
 ///////////////////////////////////////////////
-
 
 /**
  * movingAverage - calculates the running average of the latest NUM_SAMPLES
@@ -273,9 +262,6 @@ void tareScale() {
   delay(500); // Allow Serial message to complete
   ESP.restart(); // Reboot the ESP
 }
-
-
-
 void recalibrateScale(float knownWeight) {
   if(debug) {
     Serial.println("Recalibration started...");
@@ -319,9 +305,6 @@ void recalibrateScale(float knownWeight) {
   }
   delay(3000);
 }
-
-
-
 ///////////////////////////////////////////////
 //              UTILITY
 ///////////////////////////////////////////////
@@ -339,10 +322,38 @@ void handleSerialCommands() {
     }
     else if (command.startsWith("TART")) {
       tareScale();
+unsigned long lastWifiCheckTime = 0;
+  }
+ }
+}
+
+float lastWifiCheckTime = 0;
+void checkforWifi(){
+  if (millis() - lastWifiCheckTime < 60000) {
+    return;
+  }
+  if (WiFi.status() == WL_CONNECTED) {
+    if(debug) {
+      Serial.println("Connected to WiFi.");
+    }
+  } else {
+    if(debug) {
+      Serial.println("Not connected to WiFi. Restarting");
+      ESP.restart();
+
     }
   }
 }
 
 
+void enterDeepSleep() {
+  if(debug) {
+    Serial.println("Entering deep sleep for 30 minutes...");
+  }
+  // Configure the wake-up source as a timer
+  esp_sleep_enable_timer_wakeup(30 * 60 * 1000000); // 30 minutes in microseconds
 
+  // Enter deep sleep mode
+  esp_deep_sleep_start();
+}
 

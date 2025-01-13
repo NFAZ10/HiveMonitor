@@ -2,6 +2,7 @@
 #include "secrets.h"
 #include "globals.h"
 #include "aws.h"
+#include "var.h"
 
 void initAWS() {
   // Configure WiFiClientSecure to use the AWS IoT device credentials
@@ -61,4 +62,26 @@ void messageHandler(char* topic, byte* payload, unsigned int length) {
 
   Serial.println("Message: " + message);
   // Add your logic to handle the received message
+}
+
+void initMQTT() {
+  // Configure the MQTT broker
+  mqttClient.setServer(mqttServer, mqttPort);
+  Serial.println("MQTT Client Initialized.");
+}
+
+void connectToMQTT() {
+  while (!mqttClient.connected()) {
+    Serial.print("Connecting to MQTT...");
+    if (mqttClient.connect("ESP32Client")) {
+      Serial.println("connected");
+      // Subscribe to topics if needed
+      // mqttClient.subscribe("your/topic");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(mqttClient.state());
+      Serial.println(" try again in 5 seconds");
+      delay(5000);
+    }
+  }
 }

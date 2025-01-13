@@ -16,6 +16,8 @@ void tareScale();
 void recalibrateScale();
 void handleSerialCommands();
 void WifiManagerinit();
+void checkforWifi();
+void enterDeepSleep();
 
 
 

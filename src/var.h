@@ -46,6 +46,14 @@ extern const char* versionURL;
 extern const char* firmwareURL;
 extern const String currentVersion;
 
+extern unsigned long lastPublishTime; // Initialize outside the loop
+extern const unsigned long publishInterval; // 15 minutes in milliseconds
+extern int awsConnectAttempts;
 
+extern const char* mqttUser; // Replace with your MQTT username
+extern const char* mqttPassword;
+
+extern const char* mqttServer; // Replace with your local MQTT server IP address
+extern const int mqttPort; 
 
 #endif

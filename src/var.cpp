@@ -1,7 +1,8 @@
 #include "var.h"
 
 WiFiClientSecure secureClient;
-PubSubClient mqttClient(secureClient);
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
 Preferences prefs;
 
 DHT dht1(27, DHT11);
@@ -40,4 +41,21 @@ unsigned long t = 0;
 
 const char* versionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/main/src/version.txt";
 const char* firmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/main/.pio/build/esp32dev/firmware.bin";
-const String currentVersion = "1.0.36";
+const String currentVersion = "1.1.0";
+
+
+// Define the local MQTT server details
+const char* mqttServer = "216.220.92.185"; // Replace with your local MQTT server IP address
+const int mqttPort = 4116; // Replace with your local MQTT server port
+const char* mqttUser = "Hivelogin"; // Replace with your MQTT username
+const char* mqttPassword = "824656789"; // Replace with your MQTT password
+
+
+
+
+
+unsigned long lastPublishTime = 0; // Initialize outside the loop
+const unsigned long publishInterval = 30000; // 15 minutes in milliseconds
+int awsConnectAttempts = 0;
+
+

@@ -3,5 +3,6 @@
 
 void initAWS();
 void connectToAWS();
-
+void connectToMQTT();
+void initMQTT();
 #endif
