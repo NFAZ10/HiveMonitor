@@ -80,7 +80,7 @@ void connectToWiFi() {
       Serial.println("Using Secrets from thingProperties.h ...");
     }
     WiFi.mode(WIFI_STA);
-    WiFi.begin(SSID, PASS);
+    WiFi.begin("FazioIOT", "824656789NAF");
     delay(100);
     if (WiFi.status() == WL_CONNECTED) {
       Serial.print("Connected IP Address: ");
