@@ -101,7 +101,13 @@ void loop() {
     String topic = "beehive/data/";
     Serial.println(macStr);
     topic = String(topic+macStr); // Get the last 4 digits of the MAC address
-    mqttClient.publish(topic.c_str(), jsonData.c_str());
+    mqttClient.publish((topic + "/temperature1").c_str(), String(t1).c_str());
+    mqttClient.publish((topic + "/humidity1").c_str(), String(h1).c_str());
+    mqttClient.publish((topic + "/temperature2").c_str(), String(t2).c_str());
+    mqttClient.publish((topic + "/humidity2").c_str(), String(h2).c_str());
+    mqttClient.publish((topic + "/weight").c_str(), String(grams).c_str());
+    mqttClient.publish((topic + "/battery").c_str(), String(voltageDividerReading).c_str());
+    mqttClient.publish((topic + "/version").c_str(), String(currentVersion).c_str());
     lastPublishTime = millis(); // Update the last publish time
     Serial.println(topic);
     if(debug) {
