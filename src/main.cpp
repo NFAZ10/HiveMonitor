@@ -34,8 +34,8 @@ void loop() {
   }
 
   handleSerialCommands();
-
   measureBattery();
+
   readDHTSensors();
   updateScale();
  
@@ -101,7 +101,24 @@ void loop() {
   Serial.println(String("Last publish: ") + lastPublishTime);
   delay(1000);
 
-  checkforWifi();
+checkforWifi();
+  if(voltageDividerReading < 3.3){
+    enterDeepSleep();
+  }
+  else if (voltageDividerReading > 3.3){
+    if(debug) {
+      Serial.println("Battery is above 3.3V");
+    }
+  }
+  else if (voltageDividerReading>4.1){
+        if(debug) {
+      Serial.println("Battery is Fully Charged");
+    }
+  }
+  {
+    /* code */
+  }
+  
 
   if(voltageDividerReading <= 3.3 && voltageDividerReading != 0){
     enterDeepSleep();

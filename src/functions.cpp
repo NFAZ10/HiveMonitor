@@ -139,10 +139,17 @@ void readDHTSensors() {
   temp1 = (t1 * 9.0f / 5.0f) + 32.0f;
   temp2 = (t2 * 9.0f / 5.0f) + 32.0f;
   // Check for NaN values and set to null if found
+<<<<<<< HEAD
   if (isnan(h1)) h1 = -0;
   if (isnan(t1)) t1 = -0;
   if (isnan(h2)) h2 = -0;
   if (isnan(t2)) t2 = -0;
+=======
+  if (isnan(h1)) h1 = -1;
+  if (isnan(t1)) t1 = -1;
+  if (isnan(h2)) h2 = -1;
+  if (isnan(t2)) t2 = -1;
+>>>>>>> 4c22767bc5a8c167c7f14f868b235634b14c793e
   // Debug printing
   if(debug) {
     if(t1 >= 0) {
@@ -158,6 +165,9 @@ void measureBattery() {
   // Monitor the voltage divider on GPIO 32
   voltageDividerReading = 
       (analogRead(VOLTAGE_PIN) / 4095.0f) * 3.3f * voltageCalibrationFactor + voltageOffset;
+
+  // Adjust the calibration factor to match the actual voltage
+  voltageDividerReading *= (4.2 / 4.28);
   battery = voltageDividerReading; // IoT Cloud variable
   
   if(debug) {
