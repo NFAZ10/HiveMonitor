@@ -22,8 +22,8 @@ float weight = 0.0;
 int counter = 0;
 int mVA = 0;
 
-float h1 = NAN, t1 = NAN;
-float h2 = NAN, t2 = NAN;
+float h1 = -1, t1 = -1;
+float h2 = -1, t2 = -1;
 int last_weightstore = 0;
 int last_weight = 0;
 float calibrationValue = CALIBRATION_FACTOR;
@@ -31,7 +31,7 @@ String calibrationStatus = "";
 String wifiSSID = "";
 String wifiPassword = "";
 float voltageDividerReading = 0.0;
-float voltageCalibrationFactor = 1.36;
+float voltageCalibrationFactor = 1.31;
 float voltageOffset = 0.0;
 
 float vout = 0.0;
@@ -41,7 +41,7 @@ unsigned long t = 0;
 
 const char* versionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/main/src/version.txt";
 const char* firmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/main/.pio/build/esp32dev/firmware.bin";
-const String currentVersion = "1.1.5";
+const String currentVersion = "1.1.7";
 
 
 // Define the local MQTT server details

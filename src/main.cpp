@@ -43,8 +43,8 @@ void loop() {
   }
 
   handleSerialCommands();
-
   measureBattery();
+
   readDHTSensors();
 
   // Check if tare is requested via IoT or locally
@@ -106,6 +106,23 @@ Serial.println(String("Last publish: ") + lastPublishTime);
   delay(1000);
 
 checkforWifi();
+  if(voltageDividerReading < 3.3){
+    enterDeepSleep();
+  }
+  else if (voltageDividerReading > 3.3){
+    if(debug) {
+      Serial.println("Battery is above 3.3V");
+    }
+  }
+  else if (voltageDividerReading>4.1){
+        if(debug) {
+      Serial.println("Battery is Fully Charged");
+    }
+  }
+  {
+    /* code */
+  }
+  
 
   delay(1000);
 }
