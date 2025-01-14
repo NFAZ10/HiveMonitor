@@ -41,11 +41,7 @@ unsigned long t = 0;
 
 const char* versionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/main/src/version.txt";
 const char* firmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/main/.pio/build/esp32dev/firmware.bin";
-<<<<<<< HEAD
-const String currentVersion = "1.1.8";
-=======
-const String currentVersion = "1.1.7";
->>>>>>> 4c22767bc5a8c167c7f14f868b235634b14c793e
+const String currentVersion = "1.1.9";
 
 
 // Define the local MQTT server details
