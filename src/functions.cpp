@@ -158,6 +158,9 @@ void measureBattery() {
   // Monitor the voltage divider on GPIO 32
   voltageDividerReading = 
       (analogRead(VOLTAGE_PIN) / 4095.0f) * 3.3f * voltageCalibrationFactor + voltageOffset;
+
+  // Adjust the calibration factor to match the actual voltage
+  voltageDividerReading *= (4.2 / 4.28);
   battery = voltageDividerReading; // IoT Cloud variable
   
   if(debug) {
