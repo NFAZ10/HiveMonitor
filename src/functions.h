@@ -18,8 +18,7 @@ void handleSerialCommands();
 void WifiManagerinit();
 void checkforWifi();
 void enterDeepSleep();
-
-
-
+void turnOffWiFi();
+void messageHandler(char* topic, byte* payload, unsigned int length);
 
 #endif

@@ -73,10 +73,13 @@ void initMQTT() {
 void connectToMQTT() {
   while (!mqttClient.connected()) {
     Serial.print("Connecting to MQTT...");
-    if (mqttClient.connect("ESP32Client")) {
+    String clientId = "ESP32Client-" + String(WiFi.macAddress());
+    if (mqttClient.connect(clientId.c_str(), mqttUser, mqttPassword)) {
       Serial.println("connected");
-      // Subscribe to topics if needed
-      // mqttClient.subscribe("your/topic");
+      // Subscribe to the tare topic
+      String topicBase = "beehive/data/" + String(WiFi.macAddress()) + "/tare";
+      mqttClient.subscribe(topicBase.c_str());
+      Serial.println("Subscribed to topic: " + topicBase);
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());

@@ -139,10 +139,10 @@ void readDHTSensors() {
   temp1 = (t1 * 9.0f / 5.0f) + 32.0f;
   temp2 = (t2 * 9.0f / 5.0f) + 32.0f;
   // Check for NaN values and set to null if found
-  if (isnan(h1)) h1 = NULL;
-  if (isnan(t1)) t1 = NULL;
-  if (isnan(h2)) h2 = NULL;
-  if (isnan(t2)) t2 = NULL;
+  if (isnan(h1)) h1 = -0;
+  if (isnan(t1)) t1 = -0;
+  if (isnan(h2)) h2 = -0;
+  if (isnan(t2)) t2 = -0;
   // Debug printing
   if(debug) {
     if(t1 >= 0) {
@@ -167,42 +167,42 @@ void measureBattery() {
 }
 
 void updateScale() {
+  unsigned long startTime = millis();
+  unsigned long measurementDuration = 5000; // 30 seconds
   static bool newDataReady = false;
-  // Update the scale data
-  if (LoadCell.update()) {
-    newDataReady = true;
-  }
 
-  if (newDataReady) {
-    float i = LoadCell.getData();
-    if(debug) {
-      Serial.print("Load_cell output RAW: ");
-      Serial.println(i);
+  while (millis() - startTime < measurementDuration) {
+    // Update the scale data
+    if (LoadCell.update()) {
+      newDataReady = true;
     }
-    newDataReady = false;
+ 
+    if (newDataReady) {
+      float i = LoadCell.getData();
+      if (debug) {
+        Serial.print("Load_cell output RAW: ");
+        Serial.println(i);
+      }
+      newDataReady = false;
 
-    if (i <= 0) {
-      i = 0;
-    }
-    last_weight = last_weightstore + i;
+      if (i <= 0) {
+        i = 0;
+      }
+      last_weight = last_weightstore + i;
 
-    grams  = last_weight;
-    mVA    = movingAverage(last_weight);
-    if(last_weight > 0) {
-      weight = (float)last_weight / 28.35f; // convert to ounces
-    } else {
-      weight = 0.0f;
-    }
+      grams = last_weight;
+      mVA = movingAverage(last_weight);
+      if (last_weight > 0) {
+        weight = (float)last_weight / 28.35f; // convert to ounces
+      } else {
+        weight = 0.0f;
+      }
 
-    if(debug) {
-      Serial.println(String("####Grams: ") + grams);
-      Serial.println(String("####gMVA: ") + mVA);
-      Serial.println(String("####Oz: ") + weight);
-    }
-    
-    // Avoid negative weight
-    if (last_weight <= 0) {
-      last_weight = 0;
+      if (debug) {
+        Serial.println(String("####Grams: ") + grams);
+        Serial.println(String("####gMVA: ") + mVA);
+        Serial.println(String("####Oz: ") + weight);
+      }
     }
   }
 }
@@ -352,12 +352,23 @@ void checkforWifi(){
 
 void enterDeepSleep() {
   if(debug) {
-    Serial.println("Entering deep sleep for 30 minutes...");
+    Serial.println("Entering deep sleep for   minutes...");
   }
+  // Convert time from minutes to microseconds
+  int timeInMicroseconds = 5 * 60 * 1000000;
   // Configure the wake-up source as a timer
-  esp_sleep_enable_timer_wakeup(30 * 60 * 1000000); // 30 minutes in microseconds
-
+  esp_sleep_enable_timer_wakeup(timeInMicroseconds);
+  delay(1000);
   // Enter deep sleep mode
   esp_deep_sleep_start();
+  delay(1000);
 }
 
+void turnOffWiFi() {
+  if (debug) {
+    Serial.println("Turning off WiFi...");
+  }
+  WiFi.disconnect(true);
+  WiFi.mode(WIFI_OFF);
+  btStop(); // Turn off Bluetooth if it's enabled
+}
