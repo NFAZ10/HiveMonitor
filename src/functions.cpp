@@ -138,7 +138,11 @@ void readDHTSensors() {
   // Update cloud variables in Fahrenheit (as used in your code)
   temp1 = (t1 * 9.0f / 5.0f) + 32.0f;
   temp2 = (t2 * 9.0f / 5.0f) + 32.0f;
-
+  // Check for NaN values and set to null if found
+  if (isnan(h1)) h1 = NULL;
+  if (isnan(t1)) t1 = NULL;
+  if (isnan(h2)) h2 = NULL;
+  if (isnan(t2)) t2 = NULL;
   // Debug printing
   if(debug) {
     if(t1 >= 0) {
