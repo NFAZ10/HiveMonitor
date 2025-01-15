@@ -174,13 +174,9 @@ void updateScale() {
   unsigned long measurementDuration = 5000; // 30 seconds
   static bool newDataReady = false;
 
-  while (millis() - startTime < measurementDuration) {
-    // Update the scale data
-    if (LoadCell.update()) {
-      newDataReady = true;
-    }
+
  
-    if (newDataReady) {
+  
       float i = LoadCell.getData();
       if (debug) {
         Serial.print("Load_cell output RAW: ");
@@ -197,9 +193,7 @@ void updateScale() {
       mVA = movingAverage(last_weight);
       if (last_weight > 0) {
         weight = (float)last_weight / 28.35f; // convert to ounces
-      } else {
-        weight = 0.0f;
-      }
+     
 
       if (debug) {
         Serial.println(String("####Grams: ") + grams);
@@ -208,7 +202,7 @@ void updateScale() {
       }
     }
   }
-}
+
 
 ///////////////////////////////////////////////
 //           TARE & CALIBRATION

@@ -66,7 +66,7 @@ void loop() {
       delay(1000);
       mqttClient.publish((topicBase + "/humidity2").c_str(), String(h2).c_str());
       delay(1000);
-      mqttClient.publish((topicBase + "/weight").c_str(), String(grams).c_str());
+      mqttClient.publish((topicBase + "/weight").c_str(), String(mVA).c_str());
       delay(1000);
       mqttClient.publish((topicBase + "/battery").c_str(), String(voltageDividerReading).c_str());
       delay(1000);
