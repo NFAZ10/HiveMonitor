@@ -14,14 +14,18 @@ void setup() {
   loadPreferences();
   initDHTSensors();
   initScale();
-  connectToWiFi();
-  createAccessPointIfNeeded();
-  setupWebServer(); // Ensure this function is properly defined in webserver.h and webserver.cpp
+ // connectToWiFi();
+ // createAccessPointIfNeeded();
+ // setupWebServer(); // Ensure this function is properly defined in webserver.h and webserver.cpp
 
-  // Initialize and connect to the local MQTT server
-  mqttClient.setServer(mqttServer, mqttPort);
-  mqttClient.setCallback(messageHandler); // Set the callback function
-  connectToMQTT();
+  // Only initialize and connect to the local MQTT server if WiFi is connected
+  if (WiFi.status() == WL_CONNECTED) {
+    mqttClient.setServer(mqttServer, mqttPort);
+    mqttClient.setCallback(messageHandler); // Set the callback function
+    connectToMQTT();
+  } else {
+    Serial.println("WiFi not connected, skipping MQTT setup");
+  }
 
   Serial.println("Setup Complete");
 }
@@ -34,20 +38,23 @@ void loop() {
   }
 
   handleSerialCommands();
-  measureBattery();
+ measureBattery();
+ readDHTSensors();
 
-  readDHTSensors();
-  updateScale();
- 
+ updateScale();
+ Serial.println(String("MVA:  ")+mVA);
 
-
+prefs.begin("beehive-data");
+prefs.putFloat("weight", mVA);
+prefs.end();  
 
   checkForUpdates();
-  if (!mqttClient.connected()) {
-    connectToMQTT();
-  }
+
 
   if (WiFi.status() == WL_CONNECTED) {
+      if (!mqttClient.connected()) {
+    connectToMQTT();
+  }
     mqttClient.loop();
 
     if (millis() - lastPublishTime >= publishInterval) {
@@ -102,12 +109,13 @@ void loop() {
   delay(1000);
 
 checkforWifi();
-  if(voltageDividerReading < 3.3){
+  if(voltageDividerReading < 3.3&& voltageDividerReading != 0){
     enterDeepSleep();
   }
-  else if (voltageDividerReading > 3.3){
+  else if (voltageDividerReading > 3.3&& voltageDividerReading < 3.9){
     if(debug) {
       Serial.println("Battery is above 3.3V");
+      enterNap();
     }
   }
   else if (voltageDividerReading>4.1){

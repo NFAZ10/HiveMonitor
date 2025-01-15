@@ -19,15 +19,17 @@ void initSerial() {
 }
 
 void initPreferences() {
-  prefs.begin("beehive-data", false);
+  prefs.begin("beehive-data");
 }
 
 void loadPreferences() {
+  prefs.begin("beehive-data");
   last_weightstore = prefs.getInt("lastWeight", 0);
   wifiSSID         = prefs.getString("wifiSSID", "");
   wifiPassword     = prefs.getString("wifiPassword", "");
   calibrationValue = prefs.getFloat("calibrationFactor", CALIBRATION_FACTOR);
   useArduinoCloud = prefs.getBool("useArduinoCloud", true);
+  prefs.end();
 
 
   if(debug) {
@@ -169,30 +171,31 @@ void measureBattery() {
   }
 }
 
+
 void updateScale() {
   unsigned long startTime = millis();
   unsigned long measurementDuration = 5000; // 30 seconds
   static bool newDataReady = false;
+  int sampleCount = 100;
+  float total = 0.0;
+if(debug){
+Serial.println("Reading Scale");
 
-
+}
  
-  
-      float i = LoadCell.getData();
-      if (debug) {
-        Serial.print("Load_cell output RAW: ");
-        Serial.println(i);
-      }
-      newDataReady = false;
-
-      if (i <= 0) {
-        i = 0;
-      }
-      last_weight = last_weightstore + i;
-
-      grams = last_weight;
-      mVA = movingAverage(last_weight);
-      if (last_weight > 0) {
-        weight = (float)last_weight / 28.35f; // convert to ounces
+   for (int i = 0; i < sampleCount; i++) {
+    while (!LoadCell.update()) {
+      // Could do other work here if desired
+    
+   // Serial.println("Reading Scale");
+   // Serial.println(LoadCell.getData());
+    }
+    total += LoadCell.getData();
+  }
+      grams = (total / sampleCount);
+      mVA = movingAverage(grams);
+      if (grams > 0) {
+        weight = (float)grams / 28.35f; // convert to ounces
      
 
       if (debug) {
@@ -238,11 +241,16 @@ void tareScale() {
   if(debug) {
     Serial.println("Tare started...");
   }
+  prefs.begin("beehive-data");
+  prefs.putInt("lastWeight", grams);
 
   // Reset variables after taring
   grams  = 0;
   mVA    = 0;
   weight = 0;
+  prefs.begin("beehive-data");
+  prefs.putInt("lastWeight", grams);
+  prefs.end();
 
 
   if(debug) {
@@ -348,6 +356,20 @@ void checkforWifi(){
 
 
 void enterDeepSleep() {
+  if(debug) {
+    Serial.println("Entering deep sleep for   minutes...");
+  }
+  // Convert time from minutes to microseconds
+  int timeInMicroseconds = 30 * 60 * 1000000;
+  // Configure the wake-up source as a timer
+  esp_sleep_enable_timer_wakeup(timeInMicroseconds);
+  delay(1000);
+  // Enter deep sleep mode
+  esp_deep_sleep_start();
+  delay(1000);
+}
+
+void enterNap() {
   if(debug) {
     Serial.println("Entering deep sleep for   minutes...");
   }
