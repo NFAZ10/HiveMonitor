@@ -21,5 +21,5 @@ void enterDeepSleep();
 void turnOffWiFi();
 void messageHandler(char* topic, byte* payload, unsigned int length);
 void enterNap();
-
+void clearPreferences();
 #endif

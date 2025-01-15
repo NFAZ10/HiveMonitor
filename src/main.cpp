@@ -14,9 +14,11 @@ void setup() {
   loadPreferences();
   initDHTSensors();
   initScale();
- // connectToWiFi();
- // createAccessPointIfNeeded();
- // setupWebServer(); // Ensure this function is properly defined in webserver.h and webserver.cpp
+  //clearPreferences();
+  // tareScale(); 
+  //connectToWiFi();
+  //createAccessPointIfNeeded();
+  //setupWebServer(); // Ensure this function is properly defined in webserver.h and webserver.cpp
 
   // Only initialize and connect to the local MQTT server if WiFi is connected
   if (WiFi.status() == WL_CONNECTED) {
@@ -37,15 +39,25 @@ void loop() {
     Serial.println("##################################");
   }
 
-  handleSerialCommands();
- measureBattery();
- readDHTSensors();
+ handleSerialCommands();
+ //measureBattery();
+ //readDHTSensors();
 
  updateScale();
- Serial.println(String("MVA:  ")+mVA);
 
-prefs.begin("beehive-data");
-prefs.putFloat("weight", mVA);
+ Serial.println(String("Last MVA:  ")+mVA);
+ Serial.println(String("Last Weight:  ")+last_weightstore);
+
+
+ weight = grams + last_weightstore;
+ Serial.println(String("Updated Weight:  ")+weight);
+
+prefs.begin("beehive-data",false);
+prefs.putInt("Weight", grams);
+prefs.putFloat("mVA", mVA);
+
+int weighttest= prefs.getInt("Weight", 0);
+Serial.println(String("Weight Test:  ")+weight);
 prefs.end();  
 
   checkForUpdates();

@@ -19,25 +19,33 @@ void initSerial() {
 }
 
 void initPreferences() {
-  prefs.begin("beehive-data");
+  prefs.begin("beehive-data",false);
 }
 
 void loadPreferences() {
-  prefs.begin("beehive-data");
-  last_weightstore = prefs.getInt("lastWeight", 0);
+  prefs.begin("beehive-data"),false;
+  last_weightstore = prefs.getInt("Weight");
+  mVA              = prefs.getFloat("mVA");
   wifiSSID         = prefs.getString("wifiSSID", "");
   wifiPassword     = prefs.getString("wifiPassword", "");
   calibrationValue = prefs.getFloat("calibrationFactor", CALIBRATION_FACTOR);
-  useArduinoCloud = prefs.getBool("useArduinoCloud", true);
+
   prefs.end();
 
 
   if(debug) {
     Serial.println(String("Last Weight=") + last_weightstore);
+    Serial.println(String("Last mVA=") + mVA);
     Serial.println(String("Stored SSID=") + wifiSSID);
     Serial.println(String("Stored Password=") + wifiPassword);
     Serial.println(String("Stored Calibration=") + calibrationValue);
   }
+}
+
+void clearPreferences() {
+  prefs.begin("beehive-data",false);
+  prefs.clear();
+  prefs.end();
 }
 
 void initDHTSensors() {
@@ -65,6 +73,7 @@ void initScale() {
       Serial.println("HX711 initialization complete. Calibration factor set.");
     }
   }
+
 }
 
 void connectToWiFi() {
@@ -177,7 +186,7 @@ void updateScale() {
   unsigned long measurementDuration = 5000; // 30 seconds
   static bool newDataReady = false;
   int sampleCount = 100;
-  float total = 0.0;
+  int total ;
 if(debug){
 Serial.println("Reading Scale");
 
@@ -185,22 +194,24 @@ Serial.println("Reading Scale");
  
    for (int i = 0; i < sampleCount; i++) {
     while (!LoadCell.update()) {
-      // Could do other work here if desired
-    
-   // Serial.println("Reading Scale");
-   // Serial.println(LoadCell.getData());
+      //Serial.println("Reading Scale");
+      //Serial.println(LoadCell.getData());
     }
     total += LoadCell.getData();
   }
+
       grams = (total / sampleCount);
+
       mVA = movingAverage(grams);
+
+
       if (grams > 0) {
-        weight = (float)grams / 28.35f; // convert to ounces
+        weight = (int)grams / 28.35f; // convert to ounces
      
 
       if (debug) {
         Serial.println(String("####Grams: ") + grams);
-        Serial.println(String("####gMVA: ") + mVA);
+        Serial.println(String("####MVA: ") + mVA);
         Serial.println(String("####Oz: ") + weight);
       }
     }
@@ -241,7 +252,7 @@ void tareScale() {
   if(debug) {
     Serial.println("Tare started...");
   }
-  prefs.begin("beehive-data");
+  prefs.begin("beehive-data",false);
   prefs.putInt("lastWeight", grams);
 
   // Reset variables after taring
@@ -250,6 +261,7 @@ void tareScale() {
   weight = 0;
   prefs.begin("beehive-data");
   prefs.putInt("lastWeight", grams);
+  prefs.putFloat("mVA", mVA);
   prefs.end();
 
 
@@ -348,7 +360,7 @@ void checkforWifi(){
   } else {
     if(debug) {
       Serial.println("Not connected to WiFi. Restarting");
-      ESP.restart();
+     // ESP.restart();
 
     }
   }
