@@ -25,6 +25,7 @@ void setupWebServer() {
     html += "<p>Temperature 2: " + String(t2) + " &#8451;</p>";
     html += "<p>Humidity 2: " + String(h2) + " %</p>";
     html += "<p>Calibration Status: " + calibrationStatus + "</p>";
+    html += "<p>MAC Address: " + WiFi.macAddress() + "</p>";
     html += "<button onclick=\"fetch('/tare', {method: 'POST'}).then(() => alert('Tared!'))\">Tare Scale</button>";
     html += "<button onclick=\"fetch('/lowpower', {method: 'POST'}).then(() => alert('Low Power Mode Toggled'))\">Toggle Low Power Mode</button>";
     html += "<button onclick=\"fetch('/reboot', {method: 'POST'}).then(() => alert('Rebooting...'))\">Restart Device</button>";
