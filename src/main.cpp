@@ -16,9 +16,9 @@ void setup() {
   initScale();
   //clearPreferences();
   // tareScale(); 
-  //connectToWiFi();
-  //createAccessPointIfNeeded();
-  //setupWebServer(); // Ensure this function is properly defined in webserver.h and webserver.cpp
+  connectToWiFi();
+  createAccessPointIfNeeded();
+  setupWebServer(); // Ensure this function is properly defined in webserver.h and webserver.cpp
 
   // Only initialize and connect to the local MQTT server if WiFi is connected
   if (WiFi.status() == WL_CONNECTED) {

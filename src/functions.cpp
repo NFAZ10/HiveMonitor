@@ -194,8 +194,8 @@ Serial.println("Reading Scale");
  
    for (int i = 0; i < sampleCount; i++) {
     while (!LoadCell.update()) {
-      //Serial.println("Reading Scale");
-      //Serial.println(LoadCell.getData());
+      Serial.print("Reading Scale:  ");
+      Serial.println(LoadCell.getData());
     }
     total += LoadCell.getData();
   }
