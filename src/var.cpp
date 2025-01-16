@@ -39,7 +39,7 @@ float vin = 0.0;
 int value = 0;
 unsigned long t = 0;
 
- String otaBranch = "dev"; // Default branch
+ String otaBranch = "main"; // Default branch
 
  const char* DEVversionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/dev/src/version.txt";
  const char* DEVfirmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/dev/.pio/build/esp32dev/firmware.bin";

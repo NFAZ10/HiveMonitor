@@ -65,7 +65,7 @@ if (last_weightstore-grams>=10000||grams<0){
 
  weight = grams;
 
-  Serial.println(String("Updated MVA:  ")+mVA);
+ Serial.println(String("Updated MVA:  ")+mVA);
  Serial.println(String("Updated Weight:  ")+weight);
 
 prefs.begin("beehive",false);
