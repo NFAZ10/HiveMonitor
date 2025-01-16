@@ -216,11 +216,11 @@ Serial.println("Reading Scale");
     
   }
   
-       //grams=LoadCell.update();
-      
-      grams = (total / sampleCount);
+       
       
       
+      
+      grams=LoadCell.update();
       
   }
   mVA= movingAverage(grams);
