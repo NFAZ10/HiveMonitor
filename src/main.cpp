@@ -47,7 +47,7 @@ void loop() {
  handleSerialCommands();
  measureBattery();
  readDHTSensors();
-
+ checkForUpdates();
  updateScale();
 
  Serial.println(String("Last MVA:  ")+mVA);
@@ -76,7 +76,7 @@ int weighttest= prefs.getInt("Weight", 0);
 Serial.println(String("Weight Test:  ")+weight);
 prefs.end();  
 
-  checkForUpdates();
+ 
 
 
   if (WiFi.status() == WL_CONNECTED) {
