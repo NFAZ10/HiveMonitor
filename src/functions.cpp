@@ -216,13 +216,15 @@ Serial.println("Reading Scale");
     
   }
   
-       grams=LoadCell.update();
-       mVA= movingAverage(grams);
+       //grams=LoadCell.update();
+      
       grams = (total / sampleCount);
       
-      //Serial.println(String("####Grams: ") + grams);
+      
       
   }
+  mVA= movingAverage(grams);
+  Serial.println(String("Grams: ") + grams);
 }
 
 ///////////////////////////////////////////////
