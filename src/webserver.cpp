@@ -19,7 +19,7 @@ void setupWebServer() {
     html += "table, th, td { border: 1px solid #333; padding: 10px; }";
     html += "th { background-color: #333; color: white; }";
     html += "</style></head><body><h1>Beehive Monitor</h1>";
-    html += "<p>Weight: " + String(mVA) + " kg</p>";
+    html += "<p>Weight: " + String(grams) + " kg</p>";
     html += "<p>Temperature 1: " + String(t1) + " &#8451;</p>";
     html += "<p>Humidity 1: " + String(h1) + " %</p>";
     html += "<p>Temperature 2: " + String(t2) + " &#8451;</p>";

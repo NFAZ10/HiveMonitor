@@ -28,6 +28,11 @@ void setup() {
   } else {
     Serial.println("WiFi not connected, skipping MQTT setup");
   }
+  createAccessPointIfNeeded();
+  setupWebServer();
+
+
+
 
   Serial.println("Setup Complete");
 }
@@ -40,16 +45,26 @@ void loop() {
   }
 
  handleSerialCommands();
- //measureBattery();
- //readDHTSensors();
+ measureBattery();
+ readDHTSensors();
 
  updateScale();
 
  Serial.println(String("Last MVA:  ")+mVA);
  Serial.println(String("Last Weight:  ")+last_weightstore);
 
+if (last_weightstore-grams>=10000||grams<0){
+  Serial.println("Weight has changed by 10kg, updating last weight");
+  prefs.begin("beehive-data",false);
+  prefs.putInt("Weight", grams);
+  prefs.putFloat("mVA", grams);
+  prefs.end();
+  ESP.restart();
+}
 
- weight = grams + last_weightstore;
+ weight = grams;
+
+  Serial.println(String("Updated MVA:  ")+mVA);
  Serial.println(String("Updated Weight:  ")+weight);
 
 prefs.begin("beehive-data",false);
@@ -85,11 +100,13 @@ prefs.end();
       delay(1000);
       mqttClient.publish((topicBase + "/humidity2").c_str(), String(h2).c_str());
       delay(1000);
-      mqttClient.publish((topicBase + "/weight").c_str(), String(mVA).c_str());
+      mqttClient.publish((topicBase + "/weight").c_str(), String(grams).c_str());
       delay(1000);
       mqttClient.publish((topicBase + "/battery").c_str(), String(voltageDividerReading).c_str());
       delay(1000);
       mqttClient.publish((topicBase + "/version").c_str(), String(currentVersion).c_str());
+      delay(1000);
+      mqttClient.publish((topicBase + "/mva").c_str(), String(mVA).c_str());
       delay(1000);
 
       lastPublishTime = millis(); // Update the last publish time
@@ -103,6 +120,7 @@ prefs.end();
         Serial.println("weight: " + String(grams));
         Serial.println("battery: " + String(voltageDividerReading));
         Serial.println("version: " + String(currentVersion));
+        Serial.println("mva: " + String(mVA));
       }
     }
   }
@@ -140,19 +158,7 @@ checkforWifi();
   }
   
 
-  if(voltageDividerReading <= 3.3 && voltageDividerReading != 0){
-    enterDeepSleep();
-  }
-  else if (voltageDividerReading > 3.3){
-    if(debug) {
-      Serial.println("Battery is above 3.3V");
-    }
-  }
-  else if (voltageDividerReading>4.1){
-    if(debug) {
-      Serial.println("Battery is Fully Charged");
-    }
-  }
+
   delay(1000);
 }
 

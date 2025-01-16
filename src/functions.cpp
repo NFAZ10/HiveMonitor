@@ -62,6 +62,9 @@ void initScale() {
   bool _tare = true;
   LoadCell.start(stabilizingtime, _tare);
 
+   LoadCell.setTareOffset(last_weightstore);
+   Serial.println(String("Tare Offset: ") + last_weightstore);
+
   if (LoadCell.getTareTimeoutFlag() || LoadCell.getSignalTimeoutFlag()) {
     if(debug) {
       Serial.println("Timeout, check MCU>HX711 wiring and pin designations");
@@ -182,39 +185,34 @@ void measureBattery() {
 
 
 void updateScale() {
-  unsigned long startTime = millis();
-  unsigned long measurementDuration = 5000; // 30 seconds
+LoadCell.powerUp();
+delay(100);
   static bool newDataReady = false;
   int sampleCount = 100;
-  int total ;
+  int total = 0 ;
 if(debug){
 Serial.println("Reading Scale");
 
 }
- 
+ /*
    for (int i = 0; i < sampleCount; i++) {
     while (!LoadCell.update()) {
-      Serial.print("Reading Scale:  ");
-      Serial.println(LoadCell.getData());
+      //Serial.print("Reading Scale:  ");
+      //Serial.println(LoadCell.getData());
+      //delay(500);
     }
     total += LoadCell.getData();
+    Serial.println(String("Total: ") + total);
   }
-
+  */
+       grams=LoadCell.update();
+       mVA= movingAverage(grams);
       grams = (total / sampleCount);
+      delay(100);
+      Serial.println(String("####Grams: ") + grams);
+      
+   LoadCell.powerDown();
 
-      mVA = movingAverage(grams);
-
-
-      if (grams > 0) {
-        weight = (int)grams / 28.35f; // convert to ounces
-     
-
-      if (debug) {
-        Serial.println(String("####Grams: ") + grams);
-        Serial.println(String("####MVA: ") + mVA);
-        Serial.println(String("####Oz: ") + weight);
-      }
-    }
   }
 
 
@@ -248,6 +246,8 @@ float movingAverage(int newValue) {
 
 void tareScale() {
   // Start the tare process
+
+  LoadCell.update();
   LoadCell.tareNoDelay();
   if(debug) {
     Serial.println("Tare started...");
@@ -360,7 +360,7 @@ void checkforWifi(){
   } else {
     if(debug) {
       Serial.println("Not connected to WiFi. Restarting");
-     // ESP.restart();
+      ESP.restart();
 
     }
   }

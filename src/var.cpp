@@ -20,7 +20,7 @@ float temp1 = NAN;
 float temp2 = NAN;
 float weight = 0.0;
 int counter = 0;
-int mVA = 0;
+int mVA;
 
 float h1 = -1, t1 = -1;
 float h2 = -1, t2 = -1;
@@ -41,7 +41,7 @@ unsigned long t = 0;
 
 const char* versionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/dev/src/version.txt";
 const char* firmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/dev/.pio/build/esp32dev/firmware.bin";
-const String currentVersion = "1.2.1DEV";
+const String currentVersion = "1.2.2DEV";
 
 
 // Define the local MQTT server details
