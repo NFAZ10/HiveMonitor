@@ -55,11 +55,12 @@ void loop() {
 
 if (last_weightstore-grams>=10000||grams<0){
   Serial.println("Weight has changed by 10kg, updating last weight");
-  prefs.begin("beehive-data",false);
+  prefs.begin("beehive",false);
   prefs.putInt("Weight", grams);
   prefs.putFloat("mVA", grams);
   prefs.end();
-  ESP.restart();
+  loadPreferences();
+  
 }
 
  weight = grams;
@@ -67,7 +68,7 @@ if (last_weightstore-grams>=10000||grams<0){
   Serial.println(String("Updated MVA:  ")+mVA);
  Serial.println(String("Updated Weight:  ")+weight);
 
-prefs.begin("beehive-data",false);
+prefs.begin("beehive",false);
 prefs.putInt("Weight", grams);
 prefs.putFloat("mVA", mVA);
 

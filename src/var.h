@@ -41,10 +41,14 @@ extern float vout;
 extern float vin;
 extern int value;
 extern unsigned long t;
+extern  String otaBranch;
+extern const char* MAINversionURL;
+extern const char* MAINfirmwareURL;
+extern const char* MAINcurrentVersion;
+extern const char* DEVversionURL;
+extern const char* DEVfirmwareURL;
+extern const char* DEVcurrentVersion;
 
-extern const char* versionURL;
-extern const char* firmwareURL;
-extern const String currentVersion;
 
 extern unsigned long lastPublishTime; // Initialize outside the loop
 extern const unsigned long publishInterval; // 15 minutes in milliseconds
@@ -55,5 +59,9 @@ extern const char* mqttPassword;
 
 extern const char* mqttServer; // Replace with your local MQTT server IP address
 extern const int mqttPort; 
+
+extern const char* versionURL;
+extern const char* firmwareURL;
+extern const char* currentVersion;
 
 #endif

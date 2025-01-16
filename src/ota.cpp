@@ -7,6 +7,18 @@
 
 // Function to perform OTA
 void performOTA() {
+    if(otaBranch == "dev") {
+    versionURL = DEVversionURL;
+    firmwareURL = DEVfirmwareURL;
+    currentVersion = DEVcurrentVersion;
+  }
+  else if(otaBranch == "main") {
+    versionURL = MAINversionURL;
+    firmwareURL = MAINfirmwareURL;
+    currentVersion = MAINcurrentVersion;
+  }
+  if (WiFi.status() == WL_CONNECTED) {
+    
   HTTPClient http;
   http.begin(firmwareURL);
 
@@ -40,13 +52,25 @@ void performOTA() {
     Serial.println("Failed to download firmware. HTTP Code: " + String(httpCode));
   }
   http.end();
+  }
 }
 
 // Function to check for updates
 void checkForUpdates() {
+  if(otaBranch == "dev") {
+     versionURL = DEVversionURL;
+     firmwareURL = DEVfirmwareURL;
+    currentVersion = DEVcurrentVersion;
+  }
+  else if(otaBranch == "main") {
+    versionURL = MAINversionURL;
+    firmwareURL = MAINfirmwareURL;
+    currentVersion = MAINcurrentVersion;
+  }
   if (WiFi.status() == WL_CONNECTED) {
+    
     HTTPClient http;
-
+    Serial.println(String("Branch being used is: ") + otaBranch);
     // Get the latest version from GitHub
     http.begin(versionURL);
     int httpCode = http.GET();
@@ -55,8 +79,7 @@ void checkForUpdates() {
       String newVersion = http.getString();
       newVersion.trim();
 
-      Serial.println("Current Version: " + currentVersion);
-      Serial.println("Latest Version: " + newVersion);
+  
 
       // Compare versions
       if (newVersion != currentVersion) {

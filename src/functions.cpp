@@ -19,11 +19,11 @@ void initSerial() {
 }
 
 void initPreferences() {
-  prefs.begin("beehive-data",false);
+  
 }
 
 void loadPreferences() {
-  prefs.begin("beehive-data"),false;
+  prefs.begin("beehive"),false;
   last_weightstore = prefs.getInt("Weight");
   mVA              = prefs.getFloat("mVA");
   wifiSSID         = prefs.getString("wifiSSID", "");
@@ -43,7 +43,7 @@ void loadPreferences() {
 }
 
 void clearPreferences() {
-  prefs.begin("beehive-data",false);
+  prefs.begin("beehive",false);
   prefs.clear();
   prefs.end();
 }
@@ -58,12 +58,24 @@ void initScale() {
   if(debug) Serial.println("Initializing HX711...");
 
   LoadCell.begin();
-  unsigned long stabilizingtime = 2000; 
+  unsigned long stabilizingtime = 2000;
+  LoadCell.setCalFactor(CALIBRATION_FACTOR);
+
   bool _tare = true;
   LoadCell.start(stabilizingtime, _tare);
 
-   LoadCell.setTareOffset(last_weightstore);
-   Serial.println(String("Tare Offset: ") + last_weightstore);
+  // Check if the tare offset is valid
+  if (last_weightstore > 0) {
+    LoadCell.setTareOffset(last_weightstore);
+    if(debug) {
+      Serial.println(String("Tare Offset: ") + last_weightstore);
+    }
+  } else {
+    LoadCell.tareNoDelay();
+    if(debug) {
+      Serial.println("Tare Offset set to 0");
+    }
+  }
 
   if (LoadCell.getTareTimeoutFlag() || LoadCell.getSignalTimeoutFlag()) {
     if(debug) {
@@ -71,7 +83,7 @@ void initScale() {
     }
     while (1); // Halt
   } else {
-    LoadCell.setCalFactor(calibrationValue);
+    //LoadCell.setCalFactor(CALIBRATION_FACTOR);
     if(debug) {
       Serial.println("HX711 initialization complete. Calibration factor set.");
     }
@@ -185,8 +197,6 @@ void measureBattery() {
 
 
 void updateScale() {
-LoadCell.powerUp();
-delay(100);
   static bool newDataReady = false;
   int sampleCount = 100;
   int total = 0 ;
@@ -194,27 +204,26 @@ if(debug){
 Serial.println("Reading Scale");
 
 }
- /*
+ 
    for (int i = 0; i < sampleCount; i++) {
     while (!LoadCell.update()) {
-      //Serial.print("Reading Scale:  ");
-      //Serial.println(LoadCell.getData());
-      //delay(500);
+      if(debug){
+   //   Serial.print("Reading Scale:  ");
+    //  Serial.println(LoadCell.getData());
+      delay(100);
     }
     total += LoadCell.getData();
-    Serial.println(String("Total: ") + total);
+    
   }
-  */
+  
        grams=LoadCell.update();
        mVA= movingAverage(grams);
-      //grams = (total / sampleCount);
-      delay(100);
-      Serial.println(String("####Grams: ") + grams);
+      grams = (total / sampleCount);
       
-   LoadCell.powerDown();
-
+      //Serial.println(String("####Grams: ") + grams);
+      
   }
-
+}
 
 ///////////////////////////////////////////////
 //           TARE & CALIBRATION
@@ -248,6 +257,12 @@ void tareScale() {
   // Start the tare process
 
   LoadCell.update();
+
+   LoadCell.refreshDataSet();
+   LoadCell.resetSamplesIndex();
+
+
+
   LoadCell.tareNoDelay();
   if(debug) {
     Serial.println("Tare started...");
@@ -259,10 +274,13 @@ void tareScale() {
   grams  = 0;
   mVA    = 0;
   weight = 0;
-  prefs.begin("beehive-data");
-  prefs.putInt("lastWeight", grams);
+  prefs.begin("beehive-data",false);
+  prefs.putInt("Weight", grams);
   prefs.putFloat("mVA", mVA);
   prefs.end();
+
+  LoadCell.setTareOffset(grams);
+   Serial.println(String("Tare Offset: ") + grams);
 
 
   if(debug) {
@@ -272,10 +290,7 @@ void tareScale() {
     Serial.println("Weight (oz): 0");
   }
 
-  // Save reset values to Preferences
-  prefs.begin("beehive-data");
-  prefs.putInt("lastWeight", 0);
-  prefs.end();
+
 
   if(debug) {
     Serial.println("Rebooting after tare...");
@@ -283,6 +298,9 @@ void tareScale() {
   delay(500); // Allow Serial message to complete
   ESP.restart(); // Reboot the ESP
 }
+
+
+
 void recalibrateScale(float knownWeight) {
   if(debug) {
     Serial.println("Recalibration started...");
@@ -341,9 +359,16 @@ void handleSerialCommands() {
       LoadCell.setCalFactor(calibrationValue);
       Serial.println("Cal Set");
     }
+    else if (command.startsWith("NEW")) {
+       clearPreferences();
+       Serial.println("Preferences Cleared");
+    }
     else if (command.startsWith("TART")) {
       tareScale();
 unsigned long lastWifiCheckTime = 0;
+
+
+
   }
  }
 }
@@ -369,7 +394,7 @@ void checkforWifi(){
 
 void enterDeepSleep() {
   if(debug) {
-    Serial.println("Entering deep sleep for   minutes...");
+    Serial.println("Entering deep sleep for 30  minutes...");
   }
   // Convert time from minutes to microseconds
   int timeInMicroseconds = 30 * 60 * 1000000;
@@ -383,10 +408,10 @@ void enterDeepSleep() {
 
 void enterNap() {
   if(debug) {
-    Serial.println("Entering deep sleep for   minutes...");
+    Serial.println("Entering deep sleep for 1 minutes...");
   }
   // Convert time from minutes to microseconds
-  int timeInMicroseconds = 5 * 60 * 1000000;
+  int timeInMicroseconds = 1 * 60 * 1000000;
   // Configure the wake-up source as a timer
   esp_sleep_enable_timer_wakeup(timeInMicroseconds);
   delay(1000);

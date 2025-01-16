@@ -2,6 +2,8 @@
 #include <ArduinoJson.h>
 #include <Arduino.h>
 #include "webserver.h"
+#include "functions.h"
+#include "var.h"
 AsyncWebServer server(80);
 
 ///////////////////////////////////////////////
@@ -26,6 +28,15 @@ void setupWebServer() {
     html += "<p>Humidity 2: " + String(h2) + " %</p>";
     html += "<p>Calibration Status: " + calibrationStatus + "</p>";
     html += "<p>MAC Address: " + WiFi.macAddress() + "</p>";
+    html += "<h1>OTA Update</h1>";
+    html += "<form action=\"/update\" method=\"POST\">";
+    html += "<label for=\"branch\">Select Branch:</label>";
+    html += "<select name=\"branch\" id=\"branch\">";
+    html += "<option value=\"main\">Main</option>";
+    html += "<option value=\"dev\">Dev</option>";
+    html += "</select>";
+    html += "<input type=\"submit\" value=\"Update\">";
+    html += "</form>";
     html += "<button onclick=\"fetch('/tare', {method: 'POST'}).then(() => alert('Tared!'))\">Tare Scale</button>";
     html += "<button onclick=\"fetch('/lowpower', {method: 'POST'}).then(() => alert('Low Power Mode Toggled'))\">Toggle Low Power Mode</button>";
     html += "<button onclick=\"fetch('/reboot', {method: 'POST'}).then(() => alert('Rebooting...'))\">Restart Device</button>";
@@ -54,7 +65,24 @@ void setupWebServer() {
     tareRequested = true;
     request->send(200, "text/plain", "Tare requested");
   });
-
+  server.on("/update", HTTP_POST, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("branch", false)) {
+      otaBranch = request->getParam("branch", false)->value();
+      if (otaBranch == "main") {
+         prefs.begin("beehive-data", false);
+         prefs.putString("branch", "main");
+         prefs.end();
+      } else if (otaBranch == "dev") {
+         prefs.begin("beehive-data", false);
+         prefs.putString("branch", "dev");
+         prefs.end();
+      }
+      request->send(200, "text/html", "OTA update initiated for branch: " + otaBranch);
+  
+    } else {
+      request->send(400, "text/html", "Branch not selected");
+    }
+  });
   // Endpoint to toggle low power mode
   server.on("/lowpower", HTTP_POST, [](AsyncWebServerRequest *request) {
     prefs.begin("beehive-data", false);
