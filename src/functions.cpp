@@ -207,7 +207,7 @@ Serial.println("Reading Scale");
   */
        grams=LoadCell.update();
        mVA= movingAverage(grams);
-      grams = (total / sampleCount);
+      //grams = (total / sampleCount);
       delay(100);
       Serial.println(String("####Grams: ") + grams);
       
