@@ -147,8 +147,11 @@ void createAccessPointIfNeeded() {
     if(debug) {
       Serial.print("Access Point IP Address: ");
       Serial.println(WiFi.softAPIP());
+      strip.setPixelColor(0,0,255,255); //  Set pixel's color (in RAM)
+      strip.show();
     }
   }
+    
 }
 
 ///////////////////////////////////////////////

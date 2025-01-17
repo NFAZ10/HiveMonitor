@@ -8,6 +8,9 @@ extern WiFiClientSecure secureClient;
 extern PubSubClient mqttClient;
 extern Preferences prefs;
 
+extern Adafruit_NeoPixel strip;
+
+
 extern DHT dht1;
 extern DHT dht2;
 extern HX711_ADC LoadCell;

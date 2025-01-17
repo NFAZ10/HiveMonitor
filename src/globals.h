@@ -16,7 +16,7 @@
 #include "HX711_ADC.h"
 #include "DHT.h"
 #include "ArduinoJson.h"
-
+#include "Adafruit_NeoPixel.h"
 
 // External declarations for global variables
 extern WiFiClientSecure secureClient;
@@ -40,6 +40,12 @@ extern HX711_ADC LoadCell;
 #define CALIBRATION_FACTOR     -29.17 // Default calibration factor
 #define SLEEP_INTERVAL_LOW_POWER 21600 // 6 hours
 #define SLEEP_INTERVAL_NORMAL    3600  // 1 hour
+#define LED_PIN    15
+
+#define LED_COUNT 1
+
+// Declare our NeoPixel strip object:
+
 
 // Global flags and settings
 extern bool debug;

@@ -5,6 +5,9 @@ WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 Preferences prefs;
 
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+
+
 DHT dht1(27, DHT11);
 DHT dht2(26, DHT11);
 HX711_ADC LoadCell(5, 18);
@@ -47,7 +50,7 @@ unsigned long t = 0;
 
  const char* MAINversionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/main/src/version.txt";
  const char* MAINfirmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/main/.pio/build/esp32dev/firmware.bin";
- const char* MAINcurrentVersion = "2.0.2";
+ const char* MAINcurrentVersion = "2.0.3";
 
 const  char* versionURL;
 const  char* firmwareURL;

@@ -20,6 +20,10 @@ void setup() {
   createAccessPointIfNeeded();
   setupWebServer(); // Ensure this function is properly defined in webserver.h and webserver.cpp
 
+  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
+  strip.show();            // Turn OFF all pixels ASAP
+  strip.setBrightness(50); 
+
   // Only initialize and connect to the local MQTT server if WiFi is connected
   if (WiFi.status() == WL_CONNECTED) {
     mqttClient.setServer(mqttServer, mqttPort);
@@ -54,6 +58,8 @@ void loop() {
  Serial.println(String("Last Weight:  ")+last_weightstore);
 
 if (last_weightstore-grams>=10000||grams<0){
+    strip.setPixelColor(0,255,0,0); //  Set pixel's color (in RAM)
+    strip.show();
   Serial.println("Weight has changed by 10kg, updating last weight");
   prefs.begin("beehive",false);
   prefs.putInt("Weight", grams);
@@ -83,6 +89,8 @@ prefs.end();
       if (!mqttClient.connected()) {
     connectToMQTT();
   }
+  strip.setPixelColor(0,0,255,0); //  Set pixel's color (in RAM)
+  strip.show();
     mqttClient.loop();
 
     if (millis() - lastPublishTime >= publishInterval) {
@@ -146,6 +154,11 @@ checkforWifi();
   else if (voltageDividerReading > 3.3&& voltageDividerReading < 3.9){
     if(debug) {
       Serial.println("Battery is above 3.3V");
+      strip.setPixelColor(0,100,100,0); //  Set pixel's color (in RAM)
+      strip.show();
+      delay(1000);
+      strip.setPixelColor(0,0,0,0); //  Set pixel's color (in RAM)
+      strip.show();
       enterNap();
     }
   }
@@ -153,6 +166,12 @@ checkforWifi();
         if(debug) {
       Serial.println("Battery is Fully Charged");
     }
+
+      strip.setPixelColor(0,100,0,100); //  Set pixel's color (in RAM)
+      strip.show();
+      delay(1000);
+      strip.setPixelColor(0,0,0,0); //  Set pixel's color (in RAM)
+      strip.show();
   }
   {
     /* code */
