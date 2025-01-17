@@ -205,6 +205,9 @@ void updateScale() {
   int total = 0 ;
 if(debug){
 Serial.println("Reading Scale");
+      strip.setPixelColor(0,100,100,15); //  Set pixel's color (in RAM)
+      strip.show();
+
 
 }
  
@@ -216,6 +219,7 @@ Serial.println("Reading Scale");
       delay(100);
     }
     total += LoadCell.getData();
+
     
   }
   
@@ -228,6 +232,9 @@ Serial.println("Reading Scale");
   }
   mVA= movingAverage(grams);
   Serial.println(String("Grams: ") + grams);
+    
+      strip.setPixelColor(0,0,0,0); //  Set pixel's color (in RAM)
+      strip.show();
 }
 
 ///////////////////////////////////////////////
