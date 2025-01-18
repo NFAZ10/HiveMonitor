@@ -62,6 +62,18 @@ void messageHandler(char* topic, byte* payload, unsigned int length) {
 
   Serial.println("Message: " + message);
   // Add your logic to handle the received message
+if (message.startsWith("setscale(") && message.endsWith(")")) {
+  String numberStr = message.substring(9, message.length() - 1);
+  float scaleValue = numberStr.toFloat();
+  
+  prefs.begin("beehive", false);
+  prefs.putFloat("Weight", scaleValue);
+  prefs.end();
+  
+  Serial.println("Scale set to: " + String(scaleValue));
+  Serial.println("Rebooting...");
+  ESP.restart();
+}
 }
 
 void initMQTT() {
@@ -77,7 +89,7 @@ void connectToMQTT() {
     if (mqttClient.connect(clientId.c_str(), mqttUser, mqttPassword)) {
       Serial.println("connected");
       // Subscribe to the tare topic
-      String topicBase = "beehive/data/" + String(WiFi.macAddress()) + "/tare";
+      String topicBase = "beehive/data/" + String(WiFi.macAddress()) + "/cmd";
       mqttClient.subscribe(topicBase.c_str());
       Serial.println("Subscribed to topic: " + topicBase);
     } else {

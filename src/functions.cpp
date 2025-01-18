@@ -214,16 +214,13 @@ Serial.println("Reading Scale");
    for (int i = 0; i < sampleCount; i++) {
     while (!LoadCell.update()) {
       if(debug){
-   //   Serial.print("Reading Scale:  ");
-    //  Serial.println(LoadCell.getData());
-      delay(100);
-    }
-    total += LoadCell.getData();
+   //   Serial.print("Reading Scale:  ")
+   
 
     
   }
   
-       
+    }
       
       
       

@@ -50,7 +50,7 @@ unsigned long t = 0;
 
  const char* MAINversionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/main/src/version.txt";
  const char* MAINfirmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/main/.pio/build/esp32dev/firmware.bin";
- const char* MAINcurrentVersion = "2.0.3";
+ const char* MAINcurrentVersion = "2.0.4";
 
 const  char* versionURL;
 const  char* firmwareURL;
