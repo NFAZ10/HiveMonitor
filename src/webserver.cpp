@@ -59,7 +59,60 @@ void setupWebServer() {
     html += "</body></html>";
     request->send(200, "text/html", html);
   });
+  // Endpoint to show serial terminal
+  server.on("/terminal", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String html = "<html><head><style>";
+    html += "body { font-family: Arial, sans-serif; background-color: #f0f0f0; text-align: center; }";
+    html += "h1 { color: #333; }";
+    html += "textarea { width: 80%; height: 300px; }";
+    html += "</style></head><body><h1>Serial Terminal</h1>";
+    html += "<textarea id='terminal' readonly></textarea><br>";
+    html += "<input type='text' id='input' placeholder='Type a command'><button onclick='sendCommand()'>Send</button>";
+    html += "<script>";
+    html += "function sendCommand() {";
+    html += "  let input = document.getElementById('input').value;";
+    html += "  fetch('/send', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ command: input })})";
+    html += "    .then(response => response.text())";
+    html += "    .then(data => {";
+    html += "      let terminal = document.getElementById('terminal');";
+    html += "      terminal.value += '\\n' + data;";
+    html += "      terminal.scrollTop = terminal.scrollHeight;";
+    html += "    });";
+    html += "}";
+    html += "setInterval(() => {";
+    html += "  fetch('/receive').then(response => response.text()).then(data => {";
+    html += "    let terminal = document.getElementById('terminal');";
+    html += "    terminal.value += '\\n' + data;";
+    html += "    terminal.scrollTop = terminal.scrollHeight;";
+    html += "  });";
+    html += "}, 1000);";
+    html += "</script>";
+    html += "</body></html>";
+    request->send(200, "text/html", html);
+  });
 
+  // Endpoint to send command to serial
+  server.on("/send", HTTP_POST, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("body", true)) {
+      String body = request->getParam("body", true)->value();
+      StaticJsonDocument<256> doc;
+      deserializeJson(doc, body);
+      String command = doc["command"].as<String>();
+      Serial.println(command);
+      request->send(200, "text/plain", "Command sent: " + command);
+    } else {
+      request->send(400, "text/plain", "Invalid request");
+    }
+  });
+
+  // Endpoint to receive data from serial
+  server.on("/receive", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String data = "";
+    while (Serial.available()) {
+      data += char(Serial.read());
+    }
+    request->send(200, "text/plain", data);
+  });
   // Endpoint to tare the scale
   server.on("/tare", HTTP_POST, [](AsyncWebServerRequest *request) {
     tareRequested = true;
