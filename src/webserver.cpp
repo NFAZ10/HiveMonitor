@@ -104,7 +104,60 @@ void setupWebServer() {
       request->send(400, "text/plain", "Invalid request");
     }
   });
+  // Endpoint to handle WebSerial
+  server.on("/webserial", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String html = "<html><head><style>";
+    html += "body { font-family: Arial, sans-serif; background-color: #f0f0f0; text-align: center; }";
+    html += "h1 { color: #333; }";
+    html += "textarea { width: 80%; height: 300px; }";
+    html += "</style></head><body><h1>Web Serial</h1>";
+    html += "<textarea id='webserial' readonly></textarea><br>";
+    html += "<input type='text' id='input' placeholder='Type a command'><button onclick='sendCommand()'>Send</button>";
+    html += "<script>";
+    html += "function sendCommand() {";
+    html += "  let input = document.getElementById('input').value;";
+    html += "  fetch('/webserial/send', {method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ command: input })})";
+    html += "    .then(response => response.text())";
+    html += "    .then(data => {";
+    html += "      let webserial = document.getElementById('webserial');";
+    html += "      webserial.value += '\\n' + data;";
+    html += "      webserial.scrollTop = webserial.scrollHeight;";
+    html += "    });";
+    html += "}";
+    html += "setInterval(() => {";
+    html += "  fetch('/webserial/receive').then(response => response.text()).then(data => {";
+    html += "    let webserial = document.getElementById('webserial');";
+    html += "    webserial.value += '\\n' + data;";
+    html += "    webserial.scrollTop = webserial.scrollHeight;";
+    html += "  });";
+    html += "}, 1000);";
+    html += "</script>";
+    html += "</body></html>";
+    request->send(200, "text/html", html);
+  });
 
+  // Endpoint to send command to WebSerial
+  server.on("/webserial/send", HTTP_POST, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("body", true)) {
+      String body = request->getParam("body", true)->value();
+      StaticJsonDocument<256> doc;
+      deserializeJson(doc, body);
+      String command = doc["command"].as<String>();
+      Serial.println(command);
+      request->send(200, "text/plain", "Command sent: " + command);
+    } else {
+      request->send(400, "text/plain", "Invalid request");
+    }
+  });
+
+  // Endpoint to receive data from WebSerial
+  server.on("/webserial/receive", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String data = "";
+    while (Serial.available()) {
+      data += char(Serial.read());
+    }
+    request->send(200, "text/plain", data);
+  });
   // Endpoint to receive data from serial
   server.on("/receive", HTTP_GET, [](AsyncWebServerRequest *request) {
     String data = "";
