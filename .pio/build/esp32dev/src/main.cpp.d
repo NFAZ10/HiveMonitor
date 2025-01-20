@@ -235,16 +235,16 @@
  C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/hal/include/hal/aes_types.h \
  C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/mbedtls/mbedtls/include/mbedtls/error.h \
  C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/libraries/Preferences/src/Preferences.h \
- .pio/libdeps/esp32dev/ESPAsyncWebServer-esphome/src/ESPAsyncWebServer.h \
+ .pio/libdeps/esp32dev/ESPAsyncWebServer/src/ESPAsyncWebServer.h \
  C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/libraries/FS/src/FS.h \
- .pio/libdeps/esp32dev/ESPAsyncWebServer-esphome/src/StringArray.h \
- .pio/libdeps/esp32dev/AsyncTCP-esphome/src/AsyncTCP.h \
+ .pio/libdeps/esp32dev/AsyncTCP/src/AsyncTCP.h \
  C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/lwip/lwip/src/include/lwip/pbuf.h \
- .pio/libdeps/esp32dev/ESPAsyncWebServer-esphome/src/WebResponseImpl.h \
- .pio/libdeps/esp32dev/ESPAsyncWebServer-esphome/src/WebHandlerImpl.h \
- .pio/libdeps/esp32dev/ESPAsyncWebServer-esphome/src/AsyncWebSocket.h \
- .pio/libdeps/esp32dev/ESPAsyncWebServer-esphome/src/AsyncWebSynchronization.h \
- .pio/libdeps/esp32dev/ESPAsyncWebServer-esphome/src/AsyncEventSource.h \
+ .pio/libdeps/esp32dev/ESPAsyncWebServer/src/literals.h \
+ .pio/libdeps/esp32dev/ESPAsyncWebServer/src/AsyncEventSource.h \
+ .pio/libdeps/esp32dev/ESPAsyncWebServer/src/AsyncWebSocket.h \
+ .pio/libdeps/esp32dev/ESPAsyncWebServer/src/WebHandlerImpl.h \
+ .pio/libdeps/esp32dev/ESPAsyncWebServer/src/WebResponseImpl.h \
+ C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/cores/esp32/StreamString.h \
  C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/libraries/HTTPClient/src/HTTPClient.h \
  C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src/WiFiClient.h \
  C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/libraries/Update/src/Update.h \
@@ -258,4 +258,6 @@
  .pio/libdeps/esp32dev/ArduinoJson/src/ArduinoJson.hpp \
  .pio/libdeps/esp32dev/ArduinoJson/src/ArduinoJson/Configuration.hpp \
  .pio/libdeps/esp32dev/Adafruit\ NeoPixel/Adafruit_NeoPixel.h \
- src/webserver.h src/aws.h src/functions.h src/ota.h src/var.h
+ src/webserver.h src/aws.h src/functions.h src/ota.h src/var.h \
+ .pio/libdeps/esp32dev/WebSerial/src/WebSerial.h \
+ C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/cores/esp32/stdlib_noniso.h

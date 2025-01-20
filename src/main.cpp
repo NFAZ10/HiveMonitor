@@ -6,39 +6,43 @@
 #include "functions.h"
 #include "ota.h"
 #include "var.h"
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include <WebSerial.h>
+
+
 
 
 void setup() {
-  initSerial();
-  initPreferences();
-  loadPreferences();
-  initDHTSensors();
-  initScale();
-  //clearPreferences();
-  // tareScale(); 
-  connectToWiFi();
-  createAccessPointIfNeeded();
-  setupWebServer(); // Ensure this function is properly defined in webserver.h and webserver.cpp
+    initSerial();
+    initPreferences();
+    loadPreferences();
+    initDHTSensors();
+    initScale();
+    // clearPreferences();  // Uncomment if you want to clear stored preferences
+    // tareScale();         // Uncomment if you want to tare the scale on startup
+    connectToWiFi();
+    createAccessPointIfNeeded(); // Call once to handle access point creation
 
-  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-  strip.show();            // Turn OFF all pixels ASAP
-  strip.setBrightness(50); 
+    // Initialize WebSerial
+   
 
-  // Only initialize and connect to the local MQTT server if WiFi is connected
-  if (WiFi.status() == WL_CONNECTED) {
-    mqttClient.setServer(mqttServer, mqttPort);
-    mqttClient.setCallback(messageHandler); // Set the callback function
-    connectToMQTT();
-  } else {
-    Serial.println("WiFi not connected, skipping MQTT setup");
-  }
-  createAccessPointIfNeeded();
-  setupWebServer();
+    // Initialize NeoPixel strip
+    strip.begin();
+    strip.show(); // Turn OFF all pixels ASAP
+    strip.setBrightness(50);
 
+    // Initialize MQTT if WiFi is connected
+    if (WiFi.status() == WL_CONNECTED) {
+        mqttClient.setServer(mqttServer, mqttPort);
+        mqttClient.setCallback(messageHandler);
+        connectToMQTT();
+    } else {
+        Serial.println("WiFi not connected, skipping MQTT setup");
+    }
 
-
-
-  Serial.println("Setup Complete");
+    // Set up the web server
+   // setupWebServer();
 }
 
 void loop() {

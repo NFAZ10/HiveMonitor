@@ -4,8 +4,18 @@
 #include "webserver.h"
 #include "functions.h"
 #include "var.h"
+#include <WebSerial.h>
 AsyncWebServer server(80);
+void recvMsg(uint8_t *data, size_t len) {
+    WebSerial.println("Received Data...");
 
+    String msg = "";  // Initialize an empty string
+    for (int i = 0; i < len; i++) {
+        msg += (char)data[i];  // Append each character to the string
+    }
+
+    WebSerial.println(msg);  // Send the reconstructed string to WebSerial
+}
 ///////////////////////////////////////////////
 //            WEB SERVER SETUP
 ///////////////////////////////////////////////
@@ -251,7 +261,10 @@ server.on("/reboot", HTTP_POST, [](AsyncWebServerRequest *request) {
   delay(1000);
   ESP.restart();
 });
-  server.begin();
+ WebSerial.begin(&server);
+    WebSerial.onMessage(recvMsg);
+    server.begin();
+
   Serial.println("Web Server Ready.");
 
 }
