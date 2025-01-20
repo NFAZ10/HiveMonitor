@@ -42,7 +42,7 @@ void setup() {
     }
 
     // Set up the web server
-   // setupWebServer();
+   setupWebServer();
 }
 
 void loop() {
@@ -58,8 +58,8 @@ void loop() {
  checkForUpdates();
  updateScale();
 
- Serial.println(String("Last MVA:  ")+mVA);
- Serial.println(String("Last Weight:  ")+last_weightstore);
+ WebSerial.println(String("Last MVA:  ")+mVA);
+ WebSerial.println(String("Last Weight:  ")+last_weightstore);
 
 if (last_weightstore-grams>=10000||grams<0){
     strip.setPixelColor(0,255,0,0); //  Set pixel's color (in RAM)
@@ -75,15 +75,15 @@ if (last_weightstore-grams>=10000||grams<0){
 
  weight = grams;
 
- Serial.println(String("Updated MVA:  ")+mVA);
- Serial.println(String("Updated Weight:  ")+weight);
+ WebSerial.println(String("Updated MVA:  ")+mVA);
+ WebSerial.println(String("Updated Weight:  ")+weight);
 
 prefs.begin("beehive",false);
 prefs.putInt("Weight", grams);
 prefs.putFloat("mVA", mVA);
 
 int weighttest= prefs.getInt("Weight", 0);
-Serial.println(String("Weight Test:  ")+weight);
+WebSerial.println(String("Weight Test:  ")+weight);
 prefs.end();  
 
  
@@ -125,7 +125,7 @@ prefs.end();
       lastPublishTime = millis(); // Update the last publish time
       Serial.println(topicBase);
       if (debug) {
-        Serial.println("Published data to MQTT:");
+        WebSerial.println("Published data to MQTT:");
         Serial.println("temperature1: " + String(t1));
         Serial.println("humidity1: " + String(h1));
         Serial.println("temperature2: " + String(t2));
