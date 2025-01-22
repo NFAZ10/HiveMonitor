@@ -37,7 +37,7 @@ extern HX711_ADC LoadCell;
 #define VOLTAGE_PIN            32 // GPIO pin connected to the voltage divider
 #define NUM_SAMPLES            500
 #define MAX_DATA_POINTS        144
-#define CALIBRATION_FACTOR     -29.17 // Default calibration factor
+#define CALIBRATION_FACTOR     29.17 // Default calibration factor
 #define SLEEP_INTERVAL_LOW_POWER 21600 // 6 hours
 #define SLEEP_INTERVAL_NORMAL    3600  // 1 hour
 #define LED_PIN    15

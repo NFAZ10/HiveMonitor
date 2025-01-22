@@ -56,38 +56,34 @@ void initDHTSensors() {
 void initScale() {
 
   if(debug) Serial.println("Initializing HX711...");
-
   LoadCell.begin();
-  unsigned long stabilizingtime = 2000;
-  LoadCell.setCalFactor(CALIBRATION_FACTOR);
+  
+  LoadCell.setReverseOutput(); //uncomment to turn a negative output value to positive
 
-  bool _tare = true;
+
+  unsigned long stabilizingtime = 2000; // preciscion right after power-up can be improved by adding a few seconds of stabilizing time
+  boolean _tare = true; //set this to false if you don't want tare to be performed in the next step
   LoadCell.start(stabilizingtime, _tare);
+  if (LoadCell.getTareTimeoutFlag()) {
+    Serial.println("Timeout, check MCU>HX711 wiring and pin designations");
+    while (1);
+  }
+  else {
+    if(mVA>0){
+      if(mVA-last_weightstore>=10000){
+        Serial.println("Negative Weight Detected. Taring...");
+        tareScale();
+      }
+      mVA = mVA*-calibrationValue;
+     // LoadCell.setTareOffset(mVA);
+      Serial.println(String("Tare Offset: ") + mVA);
+    }
+    LoadCell.setCalFactor(calibrationValue); // set calibration value (float)
 
-  // Check if the tare offset is valid
-  if (last_weightstore > 0) {
-    LoadCell.setTareOffset(last_weightstore);
-    if(debug) {
-      Serial.println(String("Tare Offset: ") + last_weightstore);
-    }
-  } else {
-    LoadCell.tareNoDelay();
-    if(debug) {
-      Serial.println("Tare Offset set to 0");
-    }
+    
+    Serial.println("Startup is complete");
   }
 
-  if (LoadCell.getTareTimeoutFlag() || LoadCell.getSignalTimeoutFlag()) {
-    if(debug) {
-      Serial.println("Timeout, check MCU>HX711 wiring and pin designations");
-    }
-    while (1); // Halt
-  } else {
-    //LoadCell.setCalFactor(CALIBRATION_FACTOR);
-    if(debug) {
-      Serial.println("HX711 initialization complete. Calibration factor set.");
-    }
-  }
 
 }
 
@@ -205,7 +201,7 @@ void updateScale() {
   int total = 0 ;
 if(debug){
 Serial.println("Reading Scale");
-      strip.setPixelColor(0,100,100,15); //  Set pixel's color (in RAM)
+      strip.setPixelColor(0,255,255,15); //  Set pixel's color (in RAM)
       strip.show();
 
 
@@ -213,20 +209,30 @@ Serial.println("Reading Scale");
  
    for (int i = 0; i < sampleCount; i++) {
     while (!LoadCell.update()) {
-      if(debug){
-   //   Serial.print("Reading Scale:  ")
-   
+      Serial.print("Reading Scale:  ");
+      Serial.println(LoadCell.getData());
+    }
+    total += LoadCell.getData();
+    Serial.println(String("Raw Data: ") + LoadCell.getData()*calibrationValue);
 
     
   }
   
-    }
+       Serial.print(String("Total: ") + total); Serial.println(String(" || SampleCount: ") + sampleCount);
       
+      grams= total/sampleCount;
       
-      
-      grams=LoadCell.update();
-      
-  }
+      grams=grams+last_weightstore; //set offset from last weight
+
+      if(grams < 0){
+        Serial.println("Negative Weight Detected. Taring...");
+        grams = 0;
+       
+        tareScale();
+      }
+   
+      //grams=LoadCell.getData();
+
   mVA= movingAverage(grams);
   Serial.println(String("Grams: ") + grams);
     
@@ -269,7 +275,7 @@ void tareScale() {
 
    LoadCell.refreshDataSet();
    LoadCell.resetSamplesIndex();
-
+   //LoadCell.setTareOffset(0);
 
 
   LoadCell.tareNoDelay();
