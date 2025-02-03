@@ -28,7 +28,7 @@ void recvMsg(uint8_t *data, size_t len) {
       int endIndex = msg.indexOf(']');
       if (startIndex > 0 && endIndex > startIndex) {
       String weightStr = msg.substring(startIndex, endIndex);
-      last_weight = weightStr.toInt();
+      last_weightstore = weightStr.toInt();
       }
       WebSerial.println("Weight Set");
     }
