@@ -31,7 +31,38 @@ void recvMsg(uint8_t *data, size_t len) {
       last_weightstore = weightStr.toInt();
       }
       WebSerial.println("Weight Set");
-    }
+    }  else if(msg.startsWith("CALSET[")){
+      int startIndex = msg.indexOf('[') + 1;
+      int endIndex = msg.indexOf(']');
+      if (startIndex > 0 && endIndex > startIndex) {
+      String calibrationStr = msg.substring(startIndex, endIndex);
+      calibrationValue = calibrationStr.toFloat();
+      LoadCell.setCalFactor(calibrationValue);
+      }
+      WebSerial.println("Cal Set");
+    } else if(msg == "clear") {
+      clearPreferences();
+      WebSerial.println("Preferences Cleared");
+    } else if(msg == "debug") {
+      debug = !debug;
+      WebSerial.println("Debug Set");
+    } else if(msg == "sleep") {
+      enterDeepSleep();
+    } else if(msg == "nap") {
+      enterNap();
+    } else if(msg == "wifi") {
+      connectToWiFi();
+    } else if(msg == "ap") {
+      createAccessPointIfNeeded();
+    } else if(msg == "off") {
+      turnOffWiFi();
+    } else if(msg == "pref") {
+      loadPreferences();
+    } else if(msg == "read") {
+      readDHTSensors();
+    } else if(msg == "scale") {
+      updateScale();
+    } else
 
     {
       /* code */

@@ -187,7 +187,9 @@ checkforWifi();
   {
     /* code */
   }
-  
+  prefs.begin("beehive",false);
+  prefs.putFloat("calibrationFactor", calibrationValue);
+  prefs.end();
 
 
   delay(1000);
