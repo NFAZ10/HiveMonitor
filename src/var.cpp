@@ -24,6 +24,7 @@ float temp2 = NAN;
 float weight = 0.0;
 int counter = 0;
 int mVA;
+bool weightset;
 
 float h1 = -1, t1 = -1;
 float h2 = -1, t2 = -1;
@@ -50,7 +51,7 @@ unsigned long t = 0;
 
  const char* MAINversionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/webtermial/src/version.txt";
  const char* MAINfirmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/webtermial/.pio/build/esp32dev/firmware.bin";
- const char* MAINcurrentVersion = "2.0.71";
+ const char* MAINcurrentVersion = "2.0.75";
 
 
  

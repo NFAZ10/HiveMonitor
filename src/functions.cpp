@@ -44,7 +44,13 @@ void loadPreferences() {
 
 void clearPreferences() {
   prefs.begin("beehive",false);
-  prefs.clear();
+  prefs.putInt("Weight",0);
+  prefs.putFloat("mVA",0.0);
+  last_weightstore = prefs.getInt("Weight");
+  mVA              = prefs.getFloat("mVA");
+  Serial.println(String("Last Weight=") + last_weightstore);
+  Serial.println(String("Last mVA=") + mVA);
+  Serial.println("Preferences Cleared");
   prefs.end();
 }
 
@@ -75,8 +81,7 @@ void initScale() {
         tareScale();
       }
       mVA = mVA*-calibrationValue;
-     // LoadCell.setTareOffset(mVA);
-      Serial.println(String("Tare Offset: ") + mVA);
+     
     }
     LoadCell.setCalFactor(calibrationValue); // set calibration value (float)
 
@@ -213,7 +218,7 @@ Serial.println("Reading Scale");
       Serial.println(LoadCell.getData());
     }
     total += LoadCell.getData();
-    Serial.println(String("Raw Data: ") + LoadCell.getData()*calibrationValue);
+   // Serial.println(String("Raw Data: ") + LoadCell.getData()*calibrationValue);
 
     
   }
@@ -221,7 +226,7 @@ Serial.println("Reading Scale");
        Serial.print(String("Total: ") + total); Serial.println(String(" || SampleCount: ") + sampleCount);
       
       grams= total/sampleCount;
-      
+      Serial.println(String("Last Weight: ") + last_weightstore);
       grams=grams+last_weightstore; //set offset from last weight
 
       if(grams < 0){
@@ -282,20 +287,17 @@ void tareScale() {
   if(debug) {
     Serial.println("Tare started...");
   }
-  prefs.begin("beehive-data",false);
-  prefs.putInt("lastWeight", grams);
 
   // Reset variables after taring
   grams  = 0;
   mVA    = 0;
   weight = 0;
   prefs.begin("beehive-data",false);
+  prefs.putInt("lastWeight", grams);
   prefs.putInt("Weight", grams);
   prefs.putFloat("mVA", mVA);
   prefs.end();
 
-  LoadCell.setTareOffset(grams);
-   Serial.println(String("Tare Offset: ") + grams);
 
 
   if(debug) {
@@ -311,7 +313,8 @@ void tareScale() {
     Serial.println("Rebooting after tare...");
   }
   delay(500); // Allow Serial message to complete
-  ESP.restart(); // Reboot the ESP
+  weightset=false;
+  //ESP.restart(); // Reboot the ESP
 }
 
 
@@ -380,11 +383,64 @@ void handleSerialCommands() {
     }
     else if (command.startsWith("TART")) {
       tareScale();
-unsigned long lastWifiCheckTime = 0;
-
-
-
-  }
+    }
+    else if(command.startsWith("WEIGHT")){
+      weightset=true;
+      last_weightstore = command.substring(6).toInt();
+      Serial.println("Weight Set");
+    }
+    else if(command.startsWith("DEBUG")){
+      debug = !debug;
+      Serial.println("Debug Set");
+    }
+    else if(command.startsWith("REBOOT")){
+      ESP.restart();
+    }
+    else if(command.startsWith("SLEEP")){
+      enterDeepSleep();
+    }
+    else if(command.startsWith("NAP")){
+      enterNap();
+    }
+    else if(command.startsWith("WIFI")){
+      connectToWiFi();
+    }
+    else if(command.startsWith("AP")){
+      createAccessPointIfNeeded();
+    }
+    else if(command.startsWith("OFF")){
+      turnOffWiFi();
+    }
+    else if(command.startsWith("PREF")){
+      loadPreferences();
+    }
+    else if(command.startsWith("CLEAR")){
+      clearPreferences();
+    }
+    else if(command.startsWith("READ")){
+      readDHTSensors();
+    }
+    else if(command.startsWith("SCALE")){
+      updateScale();
+    }
+    else if(command.startsWith("BATTERY")){
+      measureBattery();
+    }
+    else if(command.startsWith("TARE")){
+      tareScale();
+    }
+    else if(command.startsWith("RECAL")){
+      recalibrateScale(1000);
+    }
+    else if(command.startsWith("MVA")){
+      movingAverage(grams);
+    }
+    else if(command.startsWith("SERIAL")){
+      Serial.println("Serial Commands");
+    }
+    else {
+      Serial.println("Unknown command");
+    }
  }
 }
 

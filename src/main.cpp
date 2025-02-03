@@ -43,6 +43,7 @@ void setup() {
 
     // Set up the web server
    setupWebServer();
+   Serial.println(WiFi.localIP());
 }
 
 void loop() {
@@ -51,7 +52,8 @@ void loop() {
   if(debug) {
     Serial.println("##################################");
   }
-
+  // Pause to ensure no serial or web commands were entered
+  delay(3000); // Adjust the delay as needed
  handleSerialCommands();
  measureBattery();
  readDHTSensors();
@@ -80,7 +82,9 @@ if (last_weightstore-grams>=10000||grams<0){
 
 prefs.begin("beehive",false);
 prefs.putInt("Weight", grams);
+int storedweight = prefs.getInt("Weight", grams);
 prefs.putFloat("mVA", mVA);
+Serial.println(String("# Stored Weight:  ")+storedweight);
 
 int weighttest= prefs.getInt("Weight", 0);
 WebSerial.println(String("Weight Test:  ")+weight);

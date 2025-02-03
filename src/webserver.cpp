@@ -10,9 +10,29 @@ void recvMsg(uint8_t *data, size_t len) {
     WebSerial.println("Received Data...");
 
     String msg = "";  // Initialize an empty string
-    for (int i = 0; i < len; i++) {
-        msg += (char)data[i];  // Append each character to the string
+    for (size_t i = 0; i < len; i++) {
+      msg += (char)data[i];  // Append each character to the string
     }
+
+    if (msg == "tare") {
+      tareRequested = true;
+    } else if (msg == "lowpower") {
+      lowPowerMode = !lowPowerMode;
+    } else if (msg == "reboot") {
+      ESP.restart();
+    } else if (msg.startsWith("SET[")) {
+      int startIndex = msg.indexOf('[') + 1;
+      int endIndex = msg.indexOf(']');
+      if (startIndex > 0 && endIndex > startIndex) {
+      String weightStr = msg.substring(startIndex, endIndex);
+      last_weight = weightStr.toInt();
+      }
+    }
+
+    {
+      /* code */
+    }
+    
 
     WebSerial.println(msg);  // Send the reconstructed string to WebSerial
 }
@@ -51,6 +71,19 @@ void setupWebServer() {
     html += "<button onclick=\"fetch('/lowpower', {method: 'POST'}).then(() => alert('Low Power Mode Toggled'))\">Toggle Low Power Mode</button>";
     html += "<button onclick=\"fetch('/reboot', {method: 'POST'}).then(() => alert('Rebooting...'))\">Restart Device</button>";
     html += "<a href='/data'>View Historical Data</a>";
+    html += "<h3>Set Weight</h3>";
+    html += "<form onsubmit=\"submitWeightForm(event)\">";
+    html += "Weight: <input type='text' id='weight' name='weight'><br><br>";
+    html += "<input type='submit' value='Set Weight'>";
+    html += "</form>";
+    html += "<script>";
+    html += "function submitWeightForm(event) {";
+    html += "  event.preventDefault();";
+    html += "  let weight = document.getElementById('weight').value;";
+    html += "  fetch('/setweight', {method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'weight=' + weight})";
+    html += "    .then(() => alert('Weight Set'));";
+    html += "}";
+    html += "</script>";
     html += "<h3>Change Wi-Fi Settings</h3>";
     html += "<form onsubmit=\"submitWifiForm(event)\">";
     html += "SSID: <input type='text' id='ssid' name='ssid'><br><br>";
@@ -69,6 +102,7 @@ void setupWebServer() {
     html += "</body></html>";
     request->send(200, "text/html", html);
   });
+
   // Endpoint to show serial terminal
   server.on("/terminal", HTTP_GET, [](AsyncWebServerRequest *request) {
     String html = "<html><head><style>";

@@ -19,6 +19,7 @@ extern bool debug;
 extern bool tareRequested;
 extern bool lowPowerMode;
 extern bool useArduinoCloud;
+extern bool weightset;
 
 extern float battery;
 extern float grams;
