@@ -125,19 +125,22 @@ prefs.end();
       delay(1000);
       mqttClient.publish((topicBase + "/mva").c_str(), String(mVA).c_str());
       delay(1000);
+      mqttClient.publish((topicBase + "/lbs").c_str(), String(weightInPounds).c_str());
+      delay(1000);
 
       lastPublishTime = millis(); // Update the last publish time
       Serial.println(topicBase);
       if (debug) {
         WebSerial.println("Published data to MQTT:");
-        Serial.println("temperature1: " + String(t1));
-        Serial.println("humidity1: " + String(h1));
-        Serial.println("temperature2: " + String(t2));
-        Serial.println("humidity2: " + String(h2));
-        Serial.println("weight: " + String(grams));
-        Serial.println("battery: " + String(voltageDividerReading));
-        Serial.println("version: " + String(currentVersion));
-        Serial.println("mva: " + String(mVA));
+        WebSerial.println("temperature1: " + String(t1));
+        WebSerial.println("humidity1: " + String(h1));
+        WebSerial.println("temperature2: " + String(t2));
+        WebSerial.println("humidity2: " + String(h2));
+        WebSerial.println("weight: " + String(grams));
+        WebSerial.println("battery: " + String(voltageDividerReading));
+        WebSerial.println("version: " + String(currentVersion));
+        WebSerial.println("mva: " + String(mVA));
+        WebSerial.println("lbs: " + String(weightInPounds));
       }
     }
   }

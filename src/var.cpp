@@ -29,6 +29,7 @@ bool weightset;
 float h1 = -1, t1 = -1;
 float h2 = -1, t2 = -1;
 int last_weightstore = 0;
+float weightInPounds = 0.0;
 int last_weight = 0;
 float calibrationValue = CALIBRATION_FACTOR;
 String calibrationStatus = "";
@@ -51,7 +52,7 @@ unsigned long t = 0;
 
  const char* MAINversionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/webtermial/src/version.txt";
  const char* MAINfirmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/webtermial/.pio/build/esp32dev/firmware.bin";
- const char* MAINcurrentVersion = "2.0.77";
+ const char* MAINcurrentVersion = "2.0.8";
 
 
  

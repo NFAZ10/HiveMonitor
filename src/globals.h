@@ -61,6 +61,7 @@ extern float temp2;
 extern float weight;
 extern int counter;
 extern int mVA;
+extern float weightInPounds;
 
 extern float h1, t1;
 extern float h2, t2;

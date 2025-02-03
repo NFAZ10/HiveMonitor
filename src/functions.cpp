@@ -240,6 +240,9 @@ Serial.println("Reading Scale");
 
   mVA= movingAverage(grams);
   Serial.println(String("Grams: ") + grams);
+  // Convert grams to pounds (1 gram = 0.00220462 pounds)
+  weightInPounds = grams * 0.00220462;
+  Serial.println(String("Weight in Pounds: ") + weightInPounds);
     
       strip.setPixelColor(0,0,0,0); //  Set pixel's color (in RAM)
       strip.show();
