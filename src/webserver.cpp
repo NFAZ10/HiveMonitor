@@ -16,9 +16,12 @@ void recvMsg(uint8_t *data, size_t len) {
 
     if (msg == "tare") {
       tareRequested = true;
+      WebSerial.println("Tare requested");
     } else if (msg == "lowpower") {
       lowPowerMode = !lowPowerMode;
+      WebSerial.println("Low Power Mode Toggled");
     } else if (msg == "reboot") {
+      WebSerial.println("Rebooting...");
       ESP.restart();
     } else if (msg.startsWith("SET[")) {
       int startIndex = msg.indexOf('[') + 1;
@@ -27,6 +30,7 @@ void recvMsg(uint8_t *data, size_t len) {
       String weightStr = msg.substring(startIndex, endIndex);
       last_weight = weightStr.toInt();
       }
+      WebSerial.println("Weight Set");
     }
 
     {
