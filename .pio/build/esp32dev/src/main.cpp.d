@@ -260,4 +260,5 @@
  .pio/libdeps/esp32dev/Adafruit\ NeoPixel/Adafruit_NeoPixel.h \
  src/webserver.h src/aws.h src/functions.h src/ota.h src/var.h \
  .pio/libdeps/esp32dev/WebSerial/src/WebSerial.h \
- C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/cores/esp32/stdlib_noniso.h
+ C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/cores/esp32/stdlib_noniso.h \
+ src/I2S.h

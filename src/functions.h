@@ -22,4 +22,6 @@ void turnOffWiFi();
 void messageHandler(char* topic, byte* payload, unsigned int length);
 void enterNap();
 void clearPreferences();
+void setupI2S();
+float detectBeeBuzzFrequency();
 #endif

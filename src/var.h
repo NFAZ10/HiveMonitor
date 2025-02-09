@@ -68,4 +68,7 @@ extern const char* versionURL;
 extern const char* firmwareURL;
 extern const char* currentVersion;
 
+
+
+
 #endif

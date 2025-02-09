@@ -9,6 +9,7 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <WebSerial.h>
+#include <I2S.h>
 
 
 
@@ -19,6 +20,7 @@ void setup() {
     loadPreferences();
     initDHTSensors();
     initScale();
+    setupI2S();
     // clearPreferences();  // Uncomment if you want to clear stored preferences
     // tareScale();         // Uncomment if you want to tare the scale on startup
     connectToWiFi();
@@ -59,6 +61,8 @@ void loop() {
  readDHTSensors();
  checkForUpdates();
  updateScale();
+float dominantFreq = detectBeeBuzzFrequency();
+WebSerial.println(String("Dominant Frequency: ") + dominantFreq);
 
  WebSerial.println(String("Last MVA:  ")+mVA);
  WebSerial.println(String("Last Weight:  ")+last_weightstore);
