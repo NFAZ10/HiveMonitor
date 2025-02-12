@@ -18,14 +18,37 @@
 
 float dbLevel = 0;
 float dominantFreq = 0;
+uint32_t i = 0;
 
-void receiveData(int byteCount) {
-  WebSerial.println("Received data from I2C");
-    if (byteCount == sizeof(float) * 2) {
-        Wire.readBytes((byte*)&dbLevel, sizeof(dbLevel));  
-        Wire.readBytes((byte*)&dominantFreq, sizeof(dominantFreq));
+void requestAudio() {
+    delay(5000);
+
+    // Send an integer (not a string)
+    Wire.beginTransmission(0x42);
+     // Define the variable i
+    Wire.write((uint8_t*)&i, sizeof(i));  // Send integer as bytes
+    uint8_t error = Wire.endTransmission(true);
+    Serial.printf("endTransmission: %u\n", error);
+delay(1000);
+    // Read structured data (two floats: dB level and frequency)
+    uint8_t bytesReceived = Wire.requestFrom(0x42, sizeof(float) * 2);
+    Serial.printf("requestFrom: %u\n", bytesReceived);
+    
+    float freq;
+    if (bytesReceived == sizeof(float) * 2) {  // Expecting two floats
+        float dbLevel;
+        Wire.readBytes((char*)&dbLevel, sizeof(float));
+        Wire.readBytes((char*)&freq, sizeof(float));
+        
+        Serial.printf("Received dB: %.2f\tReceived Frequency: %.2f Hz\n", dbLevel, freq);
+    } else {
+            Serial.println("Error: Incorrect number of bytes received.");
+        }
+        // Store the received values in global variables
+        dbLevel = dbLevel;
+        dominantFreq = freq;
     }
-}
+
 
 
 
@@ -37,11 +60,10 @@ void setup() {
     initDHTSensors();
     initScale();
     
-    Wire.begin(I2C_SDA, I2C_SCL);
-    Wire.onReceive(receiveData);
+    
+    //Initiate the I2C communication
+    Wire.begin();
      
-    // clearPreferences();  // Uncomment if you want to clear stored preferences
-    // tareScale();         // Uncomment if you want to tare the scale on startup
     connectToWiFi();
     createAccessPointIfNeeded(); // Call once to handle access point creation
 
@@ -70,8 +92,6 @@ void setup() {
 }
 
 void loop() {
-  
-
   if(debug) {
     Serial.println("##################################");
   }
@@ -82,7 +102,8 @@ void loop() {
  readDHTSensors();
  checkForUpdates();
  updateScale();
-
+ requestAudio();
+ 
 
 
  WebSerial.println(String("Last MVA:  ")+mVA);

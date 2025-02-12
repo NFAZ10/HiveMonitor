@@ -52,7 +52,7 @@ unsigned long t = 0;
 
  const char* MAINversionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/audio/src/version.txt";
  const char* MAINfirmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/audio/.pio/build/esp32dev/firmware.bin";
- const char* MAINcurrentVersion = "2.0.91";
+ const char* MAINcurrentVersion = "2.1.0";
 
  
 

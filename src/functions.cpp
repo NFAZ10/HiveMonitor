@@ -216,15 +216,12 @@ Serial.println("Reading Scale");
     while (!LoadCell.update()) {
       //Serial.print("Reading Scale:  ");
       //Serial.println(LoadCell.getData());
-      Serial.print(".");
     }
     total += LoadCell.getData();
    // Serial.println(String("Raw Data: ") + LoadCell.getData()*calibrationValue);
-
-    
   }
   
-       Serial.print(String("Total: ") + total); Serial.println(String(" || SampleCount: ") + sampleCount);
+       //Serial.print(String("Total: ") + total); Serial.println(String(" || SampleCount: ") + sampleCount);
       
       grams= total/sampleCount;
       Serial.println(String("Last Weight: ") + last_weightstore);
