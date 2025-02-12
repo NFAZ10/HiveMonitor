@@ -63,7 +63,7 @@ const  char* currentVersion;
 
 
 // Define the local MQTT server details
-const char* mqttServer = "216.220.92.185"; // Replace with your local MQTT server IP address
+const char* mqttServer = "mqtt.beehivemonitor.com"; // Replace with your local MQTT server IP address
 const int mqttPort = 4116; // Replace with your local MQTT server port
 const char* mqttUser = "Hivelogin"; // Replace with your MQTT username
 const char* mqttPassword = "824656789"; // Replace with your MQTT password

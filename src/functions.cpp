@@ -202,7 +202,7 @@ void measureBattery() {
 
 void updateScale() {
   static bool newDataReady = false;
-  int sampleCount = 100;
+  int sampleCount = 10;
   int total = 0 ;
 if(debug){
 Serial.println("Reading Scale");
@@ -214,8 +214,9 @@ Serial.println("Reading Scale");
  
    for (int i = 0; i < sampleCount; i++) {
     while (!LoadCell.update()) {
-      Serial.print("Reading Scale:  ");
-      Serial.println(LoadCell.getData());
+      //Serial.print("Reading Scale:  ");
+      //Serial.println(LoadCell.getData());
+      Serial.print(".");
     }
     total += LoadCell.getData();
    // Serial.println(String("Raw Data: ") + LoadCell.getData()*calibrationValue);

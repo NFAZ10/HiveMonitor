@@ -9,7 +9,23 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <WebSerial.h>
-#include <I2S.h>
+#include <Wire.h>
+
+#define I2C_SDA 21
+#define I2C_SCL 22
+#define I2C_SLAVE_ADDR 0x42  
+
+
+float dbLevel = 0;
+float dominantFreq = 0;
+
+void receiveData(int byteCount) {
+  WebSerial.println("Received data from I2C");
+    if (byteCount == sizeof(float) * 2) {
+        Wire.readBytes((byte*)&dbLevel, sizeof(dbLevel));  
+        Wire.readBytes((byte*)&dominantFreq, sizeof(dominantFreq));
+    }
+}
 
 
 
@@ -20,16 +36,17 @@ void setup() {
     loadPreferences();
     initDHTSensors();
     initScale();
-    setupI2S();
+    
+    Wire.begin(I2C_SDA, I2C_SCL);
+    Wire.onReceive(receiveData);
+     
     // clearPreferences();  // Uncomment if you want to clear stored preferences
     // tareScale();         // Uncomment if you want to tare the scale on startup
     connectToWiFi();
     createAccessPointIfNeeded(); // Call once to handle access point creation
 
-    // Initialize WebSerial
    
-
-    // Initialize NeoPixel strip
+    //Initialize NeoPixel strip
     strip.begin();
     strip.show(); // Turn OFF all pixels ASAP
     strip.setBrightness(50);
@@ -46,6 +63,10 @@ void setup() {
     // Set up the web server
    setupWebServer();
    Serial.println(WiFi.localIP());
+
+   Serial.print("Heap before FFT: ");
+   Serial.println(esp_get_free_heap_size());
+  
 }
 
 void loop() {
@@ -61,8 +82,8 @@ void loop() {
  readDHTSensors();
  checkForUpdates();
  updateScale();
-float dominantFreq = detectBeeBuzzFrequency();
-WebSerial.println(String("Dominant Frequency: ") + dominantFreq);
+
+
 
  WebSerial.println(String("Last MVA:  ")+mVA);
  WebSerial.println(String("Last Weight:  ")+last_weightstore);
@@ -131,6 +152,10 @@ prefs.end();
       delay(1000);
       mqttClient.publish((topicBase + "/lbs").c_str(), String(weightInPounds).c_str());
       delay(1000);
+      mqttClient.publish((topicBase + "/db").c_str(), String(dbLevel).c_str());
+      delay(1000);
+      mqttClient.publish((topicBase + "/Hz").c_str(), String(dominantFreq).c_str());
+      delay(1000);
 
       lastPublishTime = millis(); // Update the last publish time
       Serial.println(topicBase);
@@ -145,6 +170,9 @@ prefs.end();
         WebSerial.println("version: " + String(currentVersion));
         WebSerial.println("mva: " + String(mVA));
         WebSerial.println("lbs: " + String(weightInPounds));
+        WebSerial.println("db: " + String(dbLevel));
+        WebSerial.println("Hz: " + String(dominantFreq));
+
       }
     }
   }
@@ -198,4 +226,6 @@ checkforWifi();
 
   delay(1000);
 }
+
+
 

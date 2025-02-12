@@ -40,7 +40,7 @@ extern HX711_ADC LoadCell;
 #define CALIBRATION_FACTOR     29.17 // Default calibration factor
 #define SLEEP_INTERVAL_LOW_POWER 21600 // 6 hours
 #define SLEEP_INTERVAL_NORMAL    3600  // 1 hour
-#define LED_PIN    15
+#define LED_PIN    12
 
 #define LED_COUNT 1
 
