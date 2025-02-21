@@ -251,7 +251,7 @@
  C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/cores/esp32/MD5Builder.h \
  C:/Users/nickf/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/esp_rom/include/esp_rom_md5.h \
  .pio/libdeps/esp32dev/Adafruit\ Unified\ Sensor/Adafruit_Sensor.h \
- src/secrets.h .pio/libdeps/esp32dev/HX711_ADC/src/HX711_ADC.h \
+ .pio/libdeps/esp32dev/HX711_ADC/src/HX711_ADC.h \
  .pio/libdeps/esp32dev/HX711_ADC/src/config.h \
  .pio/libdeps/esp32dev/DHT\ sensor\ library/DHT.h \
  .pio/libdeps/esp32dev/ArduinoJson/src/ArduinoJson.h \

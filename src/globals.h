@@ -12,7 +12,6 @@
 #include <HTTPClient.h>
 #include <Update.h>
 #include <Adafruit_Sensor.h>
-#include "secrets.h"
 #include "HX711_ADC.h"
 #include "DHT.h"
 #include "ArduinoJson.h"

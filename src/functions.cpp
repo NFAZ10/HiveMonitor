@@ -1,7 +1,6 @@
 #include "globals.h"
 #include <Arduino.h>
 #include "var.h"
-#include "secrets.h"
 #include "functions.h"
 
 
