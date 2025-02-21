@@ -10,7 +10,7 @@
 #include <ESPAsyncWebServer.h>
 #include <WebSerial.h>
 #include <Wire.h>
-#include "cell.h"
+
 
 #define I2C_SDA 21
 #define I2C_SCL 22
@@ -58,9 +58,7 @@ void setup() {
     loadPreferences();
     initDHTSensors();
     initScale();
-    setupcell();
-    checkSIM();
-    
+  
     //Initiate the I2C communication
     Wire.begin();
      
