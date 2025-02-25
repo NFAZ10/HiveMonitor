@@ -6,8 +6,6 @@ void initPreferences();
 void loadPreferences();
 void initDHTSensors();
 void initScale();
-void connectToWiFi();
-void createAccessPointIfNeeded();
 void readDHTSensors();
 void measureBattery();
 void updateScale();

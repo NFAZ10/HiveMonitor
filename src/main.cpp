@@ -1,7 +1,6 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include "globals.h"
-#include "webserver.h"
 #include "aws.h"
 #include "functions.h"
 #include "ota.h"
@@ -62,10 +61,7 @@ void setup() {
     //Initiate the I2C communication
     Wire.begin();
      
-    connectToWiFi();
-    createAccessPointIfNeeded(); // Call once to handle access point creation
 
-   
     //Initialize NeoPixel strip
     strip.begin();
     strip.show(); // Turn OFF all pixels ASAP
@@ -80,12 +76,7 @@ void setup() {
         Serial.println("WiFi not connected, skipping MQTT setup");
     }
 
-    // Set up the web server
-   setupWebServer();
-   Serial.println(WiFi.localIP());
 
-   Serial.print("Heap before FFT: ");
-   Serial.println(esp_get_free_heap_size());
   
 }
 

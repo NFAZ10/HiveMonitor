@@ -91,70 +91,7 @@ void initScale() {
 
 }
 
-void connectToWiFi() {
-  // Decide which SSID/PASS to use
-  
-  if (wifiSSID != "" && wifiPassword != "") {
-    if(debug) {
-      Serial.println("Using Stored Credentials...");
-    }
-    WiFi.mode(WIFI_STA);
-    delay(100);
-    WiFi.begin(wifiSSID.c_str(), wifiPassword.c_str());
-  } else {
-    if(debug) {
-      Serial.println("Using Secrets from thingProperties.h ...");
-    }
-    WiFi.mode(WIFI_STA);
-    WiFi.begin("FazioIOT", "824656789NAF");
-    delay(100);
-    if (WiFi.status() == WL_CONNECTED) {
-      Serial.print("Connected IP Address: ");
-      Serial.println(WiFi.localIP());
-    }
-  }
-
-  // Attempt to connect for up to 10 seconds
-  unsigned long startAttemptTime = millis();
-  const unsigned long timeout = 10000; // 10 seconds
-
-  while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < timeout) {
-    if(debug) {
-      Serial.print(".");
-    }
-    delay(500);
-  }
-  
-  if (WiFi.status() == WL_CONNECTED) {
-    if(debug) {
-      Serial.println("\nConnected successfully.");
-    }
-  } else {
-    if(debug) {
-      Serial.println("\nFailed to connect. Will create Access Point if needed.");
-    }
-  }
-}
-
-void createAccessPointIfNeeded() {
-  // If unable to connect, create access point
-  if (WiFi.status() != WL_CONNECTED) {
-    if(debug) {
-      Serial.println("\nCreating Access Point...");
-    }
-    WiFi.mode(WIFI_AP);
-    WiFi.softAP("BeehiveMonitor", "password1234");
-    if(debug) {
-      Serial.print("Access Point IP Address: ");
-      Serial.println(WiFi.softAPIP());
-      strip.setPixelColor(0,0,255,255); //  Set pixel's color (in RAM)
-      strip.show();
-    }
-  }
-    
-}
-
-///////////////////////////////////////////////
+////////////////////////////////////////////
 //           SENSOR/ SCALE READINGS
 ///////////////////////////////////////////////
 

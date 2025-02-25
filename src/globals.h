@@ -7,7 +7,7 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <Preferences.h>
-#include <ESPAsyncWebServer.h>
+//#include <ESPAsyncWebServer.h>
 #include <AsyncTCP.h>
 #include <HTTPClient.h>
 #include <Update.h>
@@ -18,7 +18,7 @@
 #include "Adafruit_NeoPixel.h"
 
 // External declarations for global variables
-extern WiFiClientSecure secureClient;
+//extern WiFiClientSecure secureClient;
 extern PubSubClient mqttClient;
 extern Preferences prefs;
 
