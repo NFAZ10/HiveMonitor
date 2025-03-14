@@ -50,9 +50,10 @@ unsigned long t = 0;
  const char* DEVfirmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/dev/.pio/build/esp32dev/firmware.bin";
  const char* DEVcurrentVersion = "1.2.3DEV";
 
- const char* MAINversionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/audio/src/version.txt";
- const char* MAINfirmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/audio/.pio/build/esp32dev/firmware.bin";
- const char* MAINcurrentVersion = "2.1.1";
+ const char* MAINversionURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/refs/heads/webtermial/src/version.txt";
+ const char* MAINfirmwareURL = "https://raw.githubusercontent.com/NFAZ10/HiveMonitor/webtermial/.pio/build/esp32dev/firmware.bin";
+ const char* MAINcurrentVersion = "2.0.81";
+
 
  
 
